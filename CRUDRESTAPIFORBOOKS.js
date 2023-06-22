@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const pool = new Pool({
   user: 'admin',
   host: 'localhost',
-  database: 'HackTues10Test',
+  database: 'hacktues10test',
   password: '1234',
   port: 5432,
 });
@@ -14,7 +14,7 @@ let app = express();
 app.use(express.json());
 
 app.get('/books', async (req, res) => {
-  const result = await pool.query('SELECT * FROM books');
+  const result = await pool.query('SELECT * from users');
   res.json(result.rows);
 });
 

@@ -13,8 +13,8 @@
   <body>
     <h1>Dashboard</h1>
 
-    <a href="/users/login">Logout</a>
+    <a href="/users/logout">Logout</a>
 
-    <h4>Hello <%= user %></h4>
+    <h4>Hello <%= user.charAt(0).toUpperCase()+user.slice(1) %></h4>
   </body>
 </html>
