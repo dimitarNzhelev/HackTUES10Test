@@ -6,13 +6,15 @@ const session = require('express-session');
 const flash = require('express-flash');
 const passport = require('passport');
 const validator = require('validator');
-
 const initializePassport = require('../passportConfig');
+const multer = require('multer');
+
 
 initializePassport(passport);
-
 const PORT = process.env.PORT || 4000;
 
+
+// Setting up the server
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({extended: false}));
 app.use(session({
@@ -24,6 +26,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
+const storage = multer.memoryStorage()
+const upload = multer({storage: storage})
+
+
+
+// ROUTES 
 app.get('/', (req, res) =>{
     res.render('index');
 });
@@ -105,6 +113,16 @@ app.get('/users/dashboard', checkNotAuthenticated, (req, res) =>{
     res.render('dashboard', {user: req.user.name});
 });
 
+app.get('/upload', (req, res) => {
+    res.render('uploadPost');
+  })
+
+app.post('/upload',upload.single('photo'), (req, res) => {
+    console.log(req.body);
+    console.log(req.file);
+    //send to s3 req.file.buffer
+  })
+
 app.get("/users/logout", (req, res) => {
     req.logOut(function(err) {
         if(err)
@@ -116,7 +134,6 @@ app.get("/users/logout", (req, res) => {
    
   }); 
 
-//not ready
 app.get('/users/myposts', async (req, res) => {
     pool.query(
         `SELECT * FROM posts WHERE userid = $1`,
@@ -145,10 +162,6 @@ app.get('/users/myposts', async (req, res) => {
       return next();
     }
     res.redirect("/users/login");
-  }
-
-  async function isEmailValid(email) {
-    return emailValidator.validate(email)
   }
 
 app.listen(PORT, ()=>{
