@@ -1,22 +1,9 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
 const validator = require('validator');
 const passport = require('passport');
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
-const { pool } = require('../config/dbConf');
-const dotenv = require('dotenv');
-
+const {validateUser, insertUserAndSendEmail} = require('../controllers/authController');
 const router = express.Router();
-dotenv.config();
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.APP_PASSWORD
-    }
-  });
 
 
 router.get('/register', checkAuthenticated,(req, res) =>{
@@ -46,54 +33,14 @@ router.post('/register',async (req, res) => {
     if(errors.length > 0){
         res.render('register', {errors: errors});
     }else{
-    let hashedPassword = await bcrypt.hash(password, 10);
-        
-    const emailToken = crypto.randomBytes(64).toString('hex');
-    
-    pool.query(
-        `INSERT INTO users (name, email, password, emailToken, isVerified) VALUES ($1, $2, $3, $4, $5) RETURNING id, password`,
-        [name, email, hashedPassword, emailToken, false],
-        (err, result) => {
-            if(err){
-                console.log(err);
-                return;
-            }
-            const mailOptions = {
-                from: process.env.EMAIL,
-                to: email,
-                subject: 'Verify Email',
-                text: `Please click on the following link, or paste this into your browser to complete the process: \n\n http://${req.headers.host}/users/verify-email?token=${emailToken}\n\n`
-            };
-
-            transporter.sendMail(mailOptions, (err, response) => {
-                if(err){
-                    console.log(err);
-                } else {
-                    req.flash('success_msg', "Please check your email to verify your account.");
-                    res.redirect("/users/login");
-                }
-            });
-        }
-    );
-
+        insertUserAndSendEmail(req, res, name, email, password);
     }
 })
 
 
 router.get('/verify-email', async (req, res) => {
     const token = req.query.token;
-    pool.query(
-        `UPDATE users SET isVerified = $1 WHERE emailToken = $2 RETURNING id, password`,
-        [true, token],
-        (err, result) => {
-            if(err){
-                console.log(err);
-                return;
-            }
-            req.flash('success_msg', "Successfully verified. Please log in.");
-            res.redirect("/users/login");
-        }
-    );
+    validateUser(req, res, token);
 });
 
 router.get('/login',checkAuthenticated, (req, res) => {
