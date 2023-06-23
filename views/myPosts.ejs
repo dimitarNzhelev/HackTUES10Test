@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css"
+  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>My Posts</title>
+</head>
+<body>
+    <h1>My posts</h1>
+
+    <% if(typeof posts != "undefined") { %>
+      <% posts.forEach(post => { %>
+          <img src="<%= post.imageurl %>" width=300 height=300 />
+      <% }) %>
+   <% } %>
+   
+    
+</body>
+</html>
