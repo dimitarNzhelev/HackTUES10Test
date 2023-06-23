@@ -26,6 +26,8 @@ const generateFileName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex
 
 
 async function uploadPost(req){
+    console.log(req.file);
+    if(req.file){
     const fileBuffer = await sharp(req.file.buffer).resize({width: 400, height: 400, fit: "contain"}).toBuffer();
     const fileName = generateFileName();
     const command = new PutObjectCommand({
@@ -37,6 +39,8 @@ async function uploadPost(req){
 
     await s3.send(command);
     await pool.query('INSERT INTO posts(caption, description, imagename, user_id) VALUES($1, $2, $3, $4) RETURNING *', [req.body.caption, req.body.description, fileName, req.user.id]);
+
+    }
 }
 
 async function getMyPosts(req){

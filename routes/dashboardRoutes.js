@@ -32,11 +32,12 @@ function checkNotAuthenticated(req, res, next) {
     res.redirect("/users/login");
   }
 
-
 router.get('/', checkNotAuthenticated, (req, res) =>{
     res.render('dashboard', {user: req.user.name});
 });
 
+
+router.use(checkNotAuthenticated);
 router.get('/upload', (req, res) => {
     res.render('uploadPost');
 });
@@ -44,7 +45,7 @@ router.get('/upload', (req, res) => {
 router.post('/upload', upload.single('photo'), async (req, res) => {
 
     uploadPost(req);
-    res.redirect('/dashboard/upload');
+    res.redirect('/dashboard/myposts');
 });
 
 router.get('/myposts', async (req, res) => {
@@ -81,6 +82,7 @@ router.post('/myposts/:id/update', upload.single('photo'), async (req, res) => {
   const { caption, description } = req.body;
 
   try {
+    if(req.file){
     const post = await pool.query(`SELECT * FROM posts WHERE id = $1`, [id]);
 
     if (!post) {
@@ -115,7 +117,13 @@ router.post('/myposts/:id/update', upload.single('photo'), async (req, res) => {
       newImageKey,
       id
     ]);
-
+  }else{
+    await pool.query('UPDATE posts SET caption = $1, description = $2 WHERE id = $3', [
+      caption,
+      description,
+      id
+    ]);
+  }
     res.redirect("/dashboard/myposts");
   } catch (err) {
     console.log(err);
