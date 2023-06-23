@@ -62,7 +62,7 @@ app.get('/posts', async (req, res) => {
         post.imageUrl = url;
         console.log(url);
     }
-    res.render("myPosts", {posts: posts});
+    res.render("posts", {posts: posts});
 })
 
 app.listen(PORT, ()=>{
