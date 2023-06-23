@@ -1,17 +1,11 @@
 const express = require('express');
 const multer = require('multer');
 const sharp = require('sharp');
-const crypto = require('crypto');
 const { PutObjectCommand, GetObjectCommand, S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { pool } = require('../config/dbConf');
-const generateFileName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex')
-const storage = multer.memoryStorage()
-const upload = multer({storage: storage})
+const { deletePostById, getMyPosts, uploadPost, getPostById, generateFileName} = require('../controllers/dashboardController');
 const dotenv = require('dotenv');
-
-const router = express.Router();
-
 dotenv.config();
 
 const bucketName = process.env.BUCKET_NAME
@@ -26,6 +20,14 @@ const s3 = new S3Client({
     },
     region: bucketRegion
 });
+
+
+const storage = multer.memoryStorage()
+const upload = multer({storage: storage})
+const router = express.Router();
+
+
+
 
 function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
@@ -47,32 +49,14 @@ router.get('/upload', (req, res) => {
 
 router.post('/upload', upload.single('photo'), async (req, res) => {
 
-    const fileBuffer = await sharp(req.file.buffer).resize({width: 400, height: 400, fit: "contain"}).toBuffer();
-    const fileName = generateFileName();
-    const command = new PutObjectCommand({
-        Bucket: bucketName,
-        Key: fileName,
-        Body: fileBuffer,
-        ContentType: req.file.mimetype
-    });
-
-    await s3.send(command);
-    await pool.query('INSERT INTO posts(caption, description, imagename, user_id) VALUES($1, $2, $3, $4) RETURNING *', [req.body.caption, req.body.description, fileName, req.user.id]);
+    uploadPost(req);
     res.redirect('/dashboard/upload');
 });
 
 
 router.get('/myposts', async (req, res) => {
     try {
-        const result = await pool.query(
-            `SELECT * FROM posts WHERE user_id = $1`,
-            [req.user.id]
-        );
-
-        for(const post of result.rows){
-            post.imageUrl = "https://d2skheuztgfb2.cloudfront.net/" + post.imagename
-        }
-        res.render("myPosts", {posts: result.rows});
+        res.render("myPosts", {posts: await getMyPosts(req)});
     } catch (err) {
         console.log(err);
         res.status(500).send('Server error');
@@ -81,21 +65,12 @@ router.get('/myposts', async (req, res) => {
 
 router.delete('/myposts/:id', async (req, res) => {
     const id = req.params.id;
-    const post = await pool.query(`SELECT * FROM posts WHERE id = $1`, [id]);
-    if (!post) {
-      res.status(404).send('Post not found');
-      return;
-    }
       
-    const params = {
-      Bucket: bucketName,
-      Key: post.rows[0].imagename
-    };
-  
-    const command = new DeleteObjectCommand(params);
-    await s3.send(command);
-    await pool.query('DELETE FROM posts WHERE id = $1', [id]);
+    if(deletePostById(id)){
     res.status(200).send('Post deleted successfully');
+    }else{
+        res.status(404).send('Post not found');
+        }
   });
 
 router.get('/myposts/:id/update', async (req, res) => {
@@ -109,51 +84,52 @@ router.get('/myposts/:id/update', async (req, res) => {
 });
 
 router.post('/myposts/:id/update', upload.single('photo'), async (req, res) => {
-    const id = req.params.id;
-    const { caption, description } = req.body;
-  
-    try {
-      const post = await pool.query(`SELECT * FROM posts WHERE id = $1`, [id]);
-  
-      if (!post) {
-        res.status(404).send('Post not found');
-        return;
-      }
-  
-      const prevImageKey = post.rows[0].imagename;
-      const deleteParams = {
-        Bucket: bucketName,
-        Key: prevImageKey
-      };
-      const deleteCommand = new DeleteObjectCommand(deleteParams);
-      await s3.send(deleteCommand);
-  
-      const fileBuffer = await sharp(req.file.buffer)
-        .resize({ width: 300, height: 300, fit: "contain" })
-        .toBuffer();
-      const newImageKey = generateFileName();
-      const uploadParams = {
-        Bucket: bucketName,
-        Key: newImageKey,
-        Body: fileBuffer,
-        ContentType: req.file.mimetype
-      };
-      const uploadCommand = new PutObjectCommand(uploadParams);
-      await s3.send(uploadCommand);
-  
-      await pool.query('UPDATE posts SET caption = $1, description = $2, imagename = $3 WHERE id = $4', [
-        caption,
-        description,
-        newImageKey,
-        id
-      ]);
+  const id = req.params.id;
+  const { caption, description } = req.body;
 
-      res.redirect("/dashboard/myposts");
-    } catch (err) {
-      console.log(err);
-      res.redirect("/dashboard");
+  try {
+    const post = await pool.query(`SELECT * FROM posts WHERE id = $1`, [id]);
+
+    if (!post) {
+      res.status(404).send('Post not found');
+      return;
     }
-  });
+
+    const prevImageKey = post.rows[0].imagename;
+    const deleteParams = {
+      Bucket: bucketName,
+      Key: prevImageKey
+    };
+    const deleteCommand = new DeleteObjectCommand(deleteParams);
+    await s3.send(deleteCommand);
+
+    const fileBuffer = await sharp(req.file.buffer)
+      .resize({ width: 300, height: 300, fit: "contain" })
+      .toBuffer();
+    const newImageKey = generateFileName();
+    const uploadParams = {
+      Bucket: bucketName,
+      Key: newImageKey,
+      Body: fileBuffer,
+      ContentType: req.file.mimetype
+    };
+    const uploadCommand = new PutObjectCommand(uploadParams);
+    await s3.send(uploadCommand);
+
+    await pool.query('UPDATE posts SET caption = $1, description = $2, imagename = $3 WHERE id = $4', [
+      caption,
+      description,
+      newImageKey,
+      id
+    ]);
+
+    res.redirect("/dashboard/myposts");
+  } catch (err) {
+    console.log(err);
+    res.redirect("/dashboard");
+  }
+});
+
   
   
 
