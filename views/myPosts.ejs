@@ -1,23 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css"
-  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" />
+  <style>
+    .post-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .post-image {
+      margin-top: 20px;
+      width: 300px;
+      height: 300px;
+    }
+
+    .post-buttons {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .post-buttons button {
+      margin: 0 5px;
+    }
+  </style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>My Posts</title>
+  <script>
+    function deletePost(id) {
+      console.log(id);
+      fetch(`/dashboard/myposts/${id}`, {
+        method: 'DELETE'
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.href = '/dashboard/myposts';
+        } else {
+          console.error('Failed to delete post');
+        }
+      })
+      .catch(error => {
+        console.error('Failed to delete post:', error);
+      });
+    }
+
+    function updatePost(id) {
+      window.location.href = `/dashboard/myposts/${id}/update`;
+    }
+  </script>
 </head>
 <body>
-    <h1>My posts</h1>
+  <h1>My posts</h1>
 
-    <% if(typeof posts != "undefined") { %>
-      <% posts.forEach(post => { %>
-          <img src="<%= post.imageUrl %>" width=300 height=300 />
-      <% }) %>
-   <% } %>
-   
-    
+  <% if(typeof posts != "undefined") { %>
+    <% posts.forEach(post => { %>
+      <div class="post-container">
+        <img class="post-image" src="<%= post.imageUrl %>" />
+        <div class="post-buttons">
+          <button onclick="deletePost('<%= post.id %>')">Delete</button>
+          <button onclick="updatePost('<%= post.id %>')">Update</button>
+          <button>Like</button>
+        </div>
+      </div>
+    <% }) %>
+  <% } %>
 </body>
 </html>
