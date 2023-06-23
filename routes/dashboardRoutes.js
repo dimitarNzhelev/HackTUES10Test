@@ -34,7 +34,10 @@ function checkNotAuthenticated(req, res, next) {
     res.redirect("/users/login");
   }
 
-router.get('/', checkNotAuthenticated, (req, res) =>{
+router.use(checkNotAuthenticated);
+
+
+router.get('/', (req, res) =>{
     res.render('dashboard', {user: req.user.name});
 });
 
@@ -42,7 +45,7 @@ router.get('/upload', (req, res) => {
     res.render('uploadPost');
 });
 
-router.post('/upload',upload.single('photo'), async (req, res) => {
+router.post('/upload', upload.single('photo'), async (req, res) => {
 
     const fileBuffer = await sharp(req.file.buffer).resize({width: 400, height: 400, fit: "contain"}).toBuffer();
     const fileName = generateFileName();
@@ -55,6 +58,7 @@ router.post('/upload',upload.single('photo'), async (req, res) => {
 
     await s3.send(command);
     const result = await pool.query('INSERT INTO posts(caption, description, imagename, user_id) VALUES($1, $2, $3, $4) RETURNING *', [req.body.caption, req.body.description, fileName, req.user.id]);
+    console.log(result);
     res.redirect('/upload');
 });
 
