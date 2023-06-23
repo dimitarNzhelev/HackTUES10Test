@@ -10,7 +10,6 @@ const storage = multer.memoryStorage()
 const upload = multer({storage: storage})
 const dotenv = require('dotenv');
 
-
 const router = express.Router();
 
 dotenv.config();
@@ -99,7 +98,7 @@ router.delete('/myposts/:id', async (req, res) => {
     res.status(200).send('Post deleted successfully');
   });
 
-  router.get('/myposts/:id/update', async (req, res) => {
+router.get('/myposts/:id/update', async (req, res) => {
     const id = req.params.id;
     const post = await pool.query(`SELECT * FROM posts WHERE id = $1`, [id]);
     if (!post) {
