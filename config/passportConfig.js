@@ -1,6 +1,6 @@
 const LocalStrategy = require("passport-local").Strategy;
 const { authenticate } = require("passport");
-const { pool } = require("./DBConf");
+const { pool } = require("./dbConf");
 const bcrypt = require("bcrypt");
 
 function initialize(passport) {
