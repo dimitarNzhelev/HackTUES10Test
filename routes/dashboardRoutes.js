@@ -21,13 +21,9 @@ const s3 = new S3Client({
     region: bucketRegion
 });
 
-
 const storage = multer.memoryStorage()
 const upload = multer({storage: storage})
 const router = express.Router();
-
-
-
 
 function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
@@ -36,10 +32,8 @@ function checkNotAuthenticated(req, res, next) {
     res.redirect("/users/login");
   }
 
-router.use(checkNotAuthenticated);
 
-
-router.get('/', (req, res) =>{
+router.get('/', checkNotAuthenticated, (req, res) =>{
     res.render('dashboard', {user: req.user.name});
 });
 
@@ -52,7 +46,6 @@ router.post('/upload', upload.single('photo'), async (req, res) => {
     uploadPost(req);
     res.redirect('/dashboard/upload');
 });
-
 
 router.get('/myposts', async (req, res) => {
     try {
@@ -129,9 +122,6 @@ router.post('/myposts/:id/update', upload.single('photo'), async (req, res) => {
     res.redirect("/dashboard");
   }
 });
-
-  
-  
 
 router.get('/posts', async (req, res) => {
     const posts = (await pool.query("SELECT * FROM posts")).rows;
