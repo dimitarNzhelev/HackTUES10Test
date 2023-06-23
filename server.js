@@ -50,21 +50,6 @@ app.use("/users", authRoutes);
 
 app.use("/dashboard", dashboardRoutes);
 
-app.get('/posts', async (req, res) => {
-    const posts = (await pool.query("SELECT * FROM posts")).rows;
-    for(const post of posts){
-        const getObjectParams = {
-            Bucket: bucketName,
-            Key: post.imagename
-        }
-        const command = new GetObjectCommand(getObjectParams);
-        const url = await getSignedUrl(s3, command, {expiresIn: 3600});
-        post.imageUrl = url;
-        console.log(url);
-    }
-    res.render("posts", {posts: posts});
-})
-
 app.listen(PORT, ()=>{
     console.log(`Server is running on port ${PORT}`);
 });
