@@ -24,10 +24,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-// app.use(cors()); //enable it for all routes
 
 var corsOptions = {
-    origin: 'asddasdadada.com',
+    origin: 'spahsbashtati.com',
     optionsSuccessStatus: 200 
   }
   
