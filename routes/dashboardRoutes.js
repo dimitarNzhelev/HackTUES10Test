@@ -44,7 +44,7 @@ router.get('/upload', (req, res) => {
 
 router.post('/upload', upload.single('photo'), async (req, res) => {
 
-    uploadPost(req);
+    await uploadPost(req);
     res.redirect('/dashboard/myposts');
 });
 
@@ -59,8 +59,8 @@ router.get('/myposts', async (req, res) => {
 
 router.delete('/myposts/:id', async (req, res) => {
     const id = req.params.id;
-      
-    if(deletePostById(id)){
+      console.log(id);
+    if(await deletePostById(id)){
     res.status(200).send('Post deleted successfully');
     }else{
         res.status(404).send('Post not found');

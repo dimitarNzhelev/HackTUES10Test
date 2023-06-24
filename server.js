@@ -4,9 +4,8 @@ const session = require('express-session');
 const flash = require('express-flash');
 const passport = require('passport');
 const initializePassport = require('./config/passportConfig');
-const dotenv = require('dotenv');
+const cors = require('cors');
 
-dotenv.config();
 
 const authRoutes = require("./routes/authRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes"); 
@@ -25,6 +24,15 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+// app.use(cors()); //enable it for all routes
+
+var corsOptions = {
+    origin: 'asddasdadada.com',
+    optionsSuccessStatus: 200 
+  }
+  
+  app.use(cors(corsOptions));
+
 
 app.get('/', (req, res) =>{
     res.render('index');
