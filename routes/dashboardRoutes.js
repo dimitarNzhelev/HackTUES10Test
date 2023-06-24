@@ -4,7 +4,7 @@ const sharp = require('sharp');
 const { PutObjectCommand, GetObjectCommand, S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { pool } = require('../config/dbConf');
-const { deletePostById, getMyPosts, uploadPost, getPostById, generateFileName, toggleLike} = require('../controllers/dashboardController');
+const { deletePostById, getMyPosts, uploadPost, getPostById, generateFileName, toggleLike, getLikeStatus} = require('../controllers/dashboardController');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -152,4 +152,15 @@ router.post('/myposts/:id/like', async (req, res) => {
   }
 });
 
+router.get('/myposts/:id/likeStatus', async (req, res) => {
+  const postId = parseInt(req.params.id);
+  const userId = req.user.id;
+  try {
+    const likeStatus = await getLikeStatus(postId, userId);
+    res.status(200).json({ likeStatus });
+  } catch (error) {
+    console.error('Error getting like status:', error);
+    res.status(500).json({ message: 'Error getting like status.' });
+  }
+});
 module.exports = router;

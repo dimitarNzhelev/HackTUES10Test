@@ -72,8 +72,7 @@ async function toggleLike(postId, userId) {
     } finally {
       client.release();
     }
-  }
-
+}
 
 async function uploadPost(req){
     console.log(req.file);
@@ -128,6 +127,19 @@ async function getPostById(id) {
     return result.rows.length > 0 ? result.rows[0] : null;
 }
 
+async function getLikeStatus(postId, userId) {
+    const result = await pool.query(
+      'SELECT liked FROM likes WHERE post_id = $1 AND user_id = $2',
+      [postId, userId]
+    );
+  
+    if (result.rows.length === 0) {
+      return false;
+    }
+  
+    return true;
+}
+
 module.exports = 
 {
     getMyPosts,
@@ -135,5 +147,6 @@ module.exports =
     deletePostById,
     getPostById,
     generateFileName,
-    toggleLike
+    toggleLike,
+    getLikeStatus
 };
