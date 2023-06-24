@@ -4,7 +4,7 @@ const sharp = require('sharp');
 const { PutObjectCommand, GetObjectCommand, S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { pool } = require('../config/dbConf');
-const { deletePostById, getMyPosts, uploadPost, getPostById, generateFileName} = require('../controllers/dashboardController');
+const { deletePostById, getMyPosts, uploadPost, getPostById, generateFileName, toggleLike} = require('../controllers/dashboardController');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -36,8 +36,8 @@ router.get('/', checkNotAuthenticated, (req, res) =>{
     res.render('dashboard', {user: req.user.name});
 });
 
-
 router.use(checkNotAuthenticated);
+
 router.get('/upload', (req, res) => {
     res.render('uploadPost');
 });
@@ -77,9 +77,10 @@ router.get('/myposts/:id/update', async (req, res) => {
     res.render('updatePost', {post: post.rows[0]});
 });
 
-router.put('/myposts/:id/update', upload.single('photo'), async (req, res) => {
+router.post('/myposts/:id/update', upload.single('photo'), async (req, res) => {
   const id = req.params.id;
   const { caption, description } = req.body;
+  console.log( caption, description)
 
   try {
     if(req.file){
@@ -138,5 +139,17 @@ router.get('/posts', async (req, res) => {
     }
     res.render("posts", {posts: posts});
 })
+
+router.post('/myposts/:id/like', async (req, res) => {
+  const postId = parseInt(req.params.id);
+  const userId = req.user.id;
+  try {
+    await toggleLike(postId, userId);
+    res.status(200).json({ message: 'Toggle like successful.' });
+  } catch (error) {
+    console.error('Error toggling like:', error);
+    res.status(500).json({ message: 'Error toggling like.' });
+  }
+});
 
 module.exports = router;

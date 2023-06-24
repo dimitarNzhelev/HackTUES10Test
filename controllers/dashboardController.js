@@ -23,6 +23,57 @@ const s3 = new S3Client({
 
 const generateFileName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex')
 
+async function toggleLike(postId, userId) {
+    const client = await pool.connect();
+  
+    try {
+      await client.query('BEGIN');
+  
+      // Check if the post is currently liked by the user
+      const likedResult = await client.query(
+        'SELECT liked FROM likes WHERE post_id = $1 AND user_id = $2',
+        [postId, userId]
+      );
+  
+      if (likedResult.rows.length === 0) {
+        // Insert a like if it doesn't exist
+        await client.query(
+          'INSERT INTO likes (post_id, user_id, liked) VALUES ($1, $2, true)',
+          [postId, userId]
+        );
+      } else {
+        const currentLikedState = likedResult.rows[0].liked;
+  
+        if (currentLikedState) {
+          // Remove the like if it is currently liked
+          await client.query(
+            'DELETE FROM likes WHERE post_id = $1 AND user_id = $2',
+            [postId, userId]
+          );
+        } else {
+          // Insert a like if it is currently unliked
+          await client.query(
+            'INSERT INTO likes (post_id, user_id, liked) VALUES ($1, $2, true)',
+            [postId, userId]
+          );
+        }
+      }
+  
+      // Update the total likes count in the posts table
+      await client.query(
+        'UPDATE posts SET totallikes = (SELECT COUNT(*) FROM likes WHERE post_id = $1 AND liked = true) WHERE id = $1',
+        [postId]
+      );
+  
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
 
 async function uploadPost(req){
     console.log(req.file);
@@ -83,5 +134,6 @@ module.exports =
     uploadPost,
     deletePostById,
     getPostById,
-    generateFileName
+    generateFileName,
+    toggleLike
 };

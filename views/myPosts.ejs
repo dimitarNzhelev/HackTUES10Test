@@ -49,6 +49,22 @@
     function updatePost(id) {
       window.location.href = `/dashboard/myposts/${id}/update`;
     }
+
+    function likePost(id) {
+      fetch(`/dashboard/myposts/${id}/like`, {
+        method: 'POST'
+      })
+      .then(response => {
+        if (response.ok) {
+          window.location.href = '/dashboard';
+        } else {
+          console.error('Failed to like post');
+        }
+      })
+      .catch(error => {
+        console.error('Failed to like post:', error);
+      });
+    }
   </script>
 </head>
 <body>
@@ -61,7 +77,7 @@
         <div class="post-buttons">
           <button onclick="deletePost('<%= post.id %>')">Delete</button>
           <button onclick="updatePost('<%= post.id %>')">Update</button>
-          <button>Like</button>
+          <button onclick="likePost('<%= post.id %>')">Like</button>
         </div>
       </div>
     <% }) %>
