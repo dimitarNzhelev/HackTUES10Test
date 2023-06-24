@@ -77,7 +77,7 @@ router.get('/myposts/:id/update', async (req, res) => {
     res.render('updatePost', {post: post.rows[0]});
 });
 
-router.post('/myposts/:id/update', upload.single('photo'), async (req, res) => {
+router.put('/myposts/:id/update', upload.single('photo'), async (req, res) => {
   const id = req.params.id;
   const { caption, description } = req.body;
 

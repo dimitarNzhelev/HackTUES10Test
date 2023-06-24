@@ -17,6 +17,8 @@ function initialize(passport) {
   
           if (results.rows.length > 0) {
             const user = results.rows[0];
+
+            if (user.isverified == true) {
   
             bcrypt.compare(password, user.password, (err, isMatch) => {
               if (err) {
@@ -25,10 +27,16 @@ function initialize(passport) {
               if (isMatch) {
                 return done(null, user);
               } else {
-                //password is incorrect
+                
                 return done(null, false, { message: "Password is incorrect" });
               }
+
             });
+          }else{
+            return done(null, false, {
+              message: "The email address is not verified"
+            });
+          }
           } else {
             // No user
             return done(null, false, {
