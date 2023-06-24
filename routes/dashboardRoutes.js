@@ -134,14 +134,7 @@ router.put('/myposts/:id/update', upload.single('photo'), async (req, res) => {
 router.get('/posts', async (req, res) => {
     const posts = (await pool.query("SELECT * FROM posts")).rows;
     for(const post of posts){
-        const getObjectParams = {
-            Bucket: bucketName,
-            Key: post.imagename
-        }
-        const command = new GetObjectCommand(getObjectParams);
-        const url = await getSignedUrl(s3, command, {expiresIn: 3600});
-        post.imageUrl = url;
-        console.log(url);
+        post.imageUrl = "https://d2skheuztgfb2.cloudfront.net/" + post.imagename
     }
     res.render("posts", {posts: posts});
 })

@@ -2,7 +2,6 @@ const dotenv = require('dotenv');
 const { PutObjectCommand, GetObjectCommand, S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const sharp = require('sharp');
 const crypto = require('crypto');
-const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { pool } = require('../config/dbConf');
 
 dotenv.config();
