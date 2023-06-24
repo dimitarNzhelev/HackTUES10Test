@@ -140,6 +140,41 @@ async function getLikeStatus(postId, userId) {
     return true;
 }
 
+async function getCommnetsByPost(postId){
+    const result = await pool.query(
+        `SELECT * FROM comments WHERE post_id = $1`,
+        [postId]
+    );
+
+    return result.rows;
+}
+
+async function addCommentByPost(postId, userId, comment){
+    if(!comment){
+        return;
+    }
+
+    try{
+        await pool.query(
+            `INSERT INTO comments(post_id, user_id, comment_text) VALUES($1, $2, $3)`,
+            [postId, userId, comment]
+        );
+        return;
+    }catch(err){
+        console.log(err);
+        return;
+    }
+}
+
+async function deleteCommentById(commentId){
+    const result = await pool.query(`SELECT * FROM comments WHERE id = $1`, [commentId]);
+    if(result.rows.length === 0){
+            return;
+        }
+    await pool.query('DELETE FROM comments WHERE id = $1', [commentId]);
+    return true;
+}
+
 module.exports = 
 {
     getMyPosts,
@@ -148,5 +183,8 @@ module.exports =
     getPostById,
     generateFileName,
     toggleLike,
-    getLikeStatus
+    getLikeStatus,
+    getCommnetsByPost,
+    addCommentByPost,
+    deleteCommentById
 };
