@@ -187,8 +187,24 @@ async function deleteCommentById(commentId, user_id){
             return false;
         }
     // }
-
 }
+
+async function updateCommentById(commentId, commentText) {
+    const result = await pool.query(`SELECT * FROM comments WHERE id = $1`, [commentId]);
+    
+    if(result.rows.length === 0) {
+        throw new Error(`No comment found with id: ${commentId}`);
+    }
+
+    const res = await pool.query('UPDATE comments SET comment_text = $1 WHERE id = $2', [commentText, commentId]);
+
+    if(res.rowCount > 0){
+        return true;
+    } else {
+        return false;
+    }
+}
+
 
 module.exports = 
 {
@@ -202,5 +218,6 @@ module.exports =
     getCommnetsByPost,
     addCommentByPost,
     deleteCommentById,
-    getUserById
+    getUserById,
+    updateCommentById
 };

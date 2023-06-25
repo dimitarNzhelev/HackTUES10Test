@@ -4,7 +4,7 @@ const sharp = require('sharp');
 const { PutObjectCommand, GetObjectCommand, S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { pool } = require('../config/dbConf');
-const { deletePostById, getMyPosts, uploadPost, getPostById, generateFileName, toggleLike, getLikeStatus, getUserById, getCommnetsByPost, deleteCommentById} = require('../controllers/dashboardController');
+const { deletePostById, getMyPosts, uploadPost, getPostById, generateFileName, toggleLike, getLikeStatus, getUserById, getCommnetsByPost, deleteCommentById, updateCommentById} = require('../controllers/dashboardController');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -200,6 +200,22 @@ router.delete('/posts/:id/comments/:commentId', async (req, res) => {
   } catch (error) {
     console.error('Error deleting comment:', error);
     res.status(500).json({ message: 'Error deleting comment.' });
+  }
+});
+
+router.put('/posts/:id/comments/:commentId',express.json(), async (req, res) => {
+  const commentId = req.params.commentId;
+  const commentText = req.body.commentText;
+  try {
+    const result = await updateCommentById(commentId, commentText);
+    if(result){
+      res.status(200).json({ message: 'Comment updated successfully.' , success: true});
+    } else {
+      res.status(404).json({ message: 'Comment not found.', success: false });
+    }
+  } catch (error) {
+    console.error('Error updating comment:', error);
+    res.status(500).json({ message: 'Error updating comment.',  success: falseh });
   }
 });
 

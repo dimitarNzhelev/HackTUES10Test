@@ -55,6 +55,46 @@
                 }
             })
         }
+
+        function editComment(commentId, postid) {
+            const commentElement = document.getElementById(`comment_${commentId}`);
+            const commentText = commentElement.textContent;
+            commentElement.innerHTML = `<input type="text" id="input_${commentId}" value="${commentText}" />`;
+            const inputElement = document.getElementById(`input_${commentId}`);
+            inputElement.focus();
+
+            inputElement.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    updateComment(commentId, postid);
+                }
+            });
+        }
+
+        function updateComment(commentId, postId) {
+            const inputElement = document.getElementById(`input_${commentId}`);
+            const updatedText = inputElement.value;
+            const commentElement = document.getElementById(`comment_${commentId}`);
+            commentElement.innerHTML = updatedText;
+            fetch(`/dashboard/posts/${postId}/comments/${commentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ commentText: updatedText })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    console.log("Comment updated successfully");
+                } else {
+                    console.error(data);
+                    console.error("Failed to update comment", data.error);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+}
+
     </script>
 </head>
 <body>
@@ -63,7 +103,6 @@
         <h1><%= post.caption%></h1>
         <p><%= post.description%></p>
         <p>Total likes: <%= post.totallikes %></p>
-        <% console.log(post.id) %>
         <p>Total comments: <%= post.totalcomments %></p>
         <p>Posted by: <%= user.name %></p>
         <img class="post-image" src="<%= post.imageUrl %>" />
@@ -72,10 +111,10 @@
             <% comments.forEach((comment) => { %>
             <div class="comment">
                 <h1>Comment</h1>
-                <p><%= comment.comment_text %></p>
+                <p id="comment_<%= comment.id %>"><%= comment.comment_text %></p>
                 <p>Posted by: <%= comment.username %></p>
                 <% if (comment.user_id == user.id){ %>
-                    <button class="comment-button">Update</button>
+                    <button class="comment-button" onclick="editComment('<%= comment.id %>', '<%= post.id %>')">Update</button>
                     <button class="comment-button" onclick="deleteCommentById('<%= comment.id %>', '<%= post.id %>')">Delete</button>
                 <%} %>
             </div>
