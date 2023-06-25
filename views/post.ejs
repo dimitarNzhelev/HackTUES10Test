@@ -287,6 +287,8 @@
                 <p id="comment_<%= comment.id %>"><%= comment.comment_text %></p>
                 <p>Posted by: <%= comment.username %></p>
                 <% if (comment.user_id == user.id){ %>
+                    <% console.log("comment: ", comment) %>
+                    <% console.log("user: ", user) %>"
                     <button class="comment-button" onclick="editComment('<%= comment.id %>', '<%= post.id %>')">Update</button>
                     <button class="comment-button" onclick="deleteCommentById('<%= comment.id %>', '<%= post.id %>')">Delete</button>
                 <%} %>
