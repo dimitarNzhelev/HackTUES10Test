@@ -235,7 +235,6 @@
     <div class="content">
         <h1><%= post.caption%></h1>
         <p><%= post.description%></p>
-        <% console.log(post.totallikes) %>
         <p id="total-likes">Total likes: <%= post.totallikes %></p>
         <p id="totalcomments">Total comments: <%= post.totalcomments %></p>
         <button id="like-button" class="like-button" onclick="likePost('<%= post.id %>')">
@@ -267,7 +266,7 @@
           
         <p>Posted by: <%= user.name %></p>
         <img class="post-image" src="<%= post.imageUrl %>" />
-        <a href="dashboard/posts">Back to dashboard</a>
+        <a href="/dashboard/posts">Back to dashboard</a>
         <button class="comment-button" onclick="addComment('<%= post.id %>', '<%= user.id %>', '<%= user.name %>')" >Add comment</button>
 
         <% if(comments && comments.length > 0) { %>

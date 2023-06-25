@@ -14,8 +14,10 @@
 
     <% if(typeof posts != "undefined") { %>
       <% posts.forEach(post => { %>
+        <a href="/dashboard/posts/<%= post.id %>">
           <img src="<%= post.imageUrl %>" width=300 height=300 />
-      <% }) %>
+        </a>
+          <% }) %>
    <% } %>
    
     
