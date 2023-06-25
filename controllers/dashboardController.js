@@ -180,7 +180,9 @@ async function deleteCommentById(commentId, user_id){
             return;
         }
     // if(result.rows[0].user_id == user_id){ TOVA GO PROVERQVAM OSHTE V FRONTENDA
-        const res = await pool.query('DELETE FROM comments WHERE id = $1', [commentId]);
+        const res = await pool.query('DELETE FROM comments WHERE id = $1', [commentId]) && 
+        //decrese comments count in posts table
+        await pool.query('UPDATE posts SET totalcomments = totalcomments - 1 WHERE id = $1', [result.rows[0].post_id]);
         if(res){
             return true;
         }else{
@@ -205,6 +207,30 @@ async function updateCommentById(commentId, commentText) {
     }
 }
 
+async function createComment(postId, userId, commentText) {
+    if(!commentText){
+        return;
+    }
+
+    try{
+        const newComment = await pool.query(
+            `INSERT INTO comments(post_id, user_id, comment_text) VALUES($1, $2, $3) RETURNING *`,
+            [postId, userId, commentText]
+        );
+
+        await pool.query(
+            `UPDATE posts SET totalcomments = (SELECT COUNT(*) FROM comments WHERE post_id = $1) WHERE id = $1`,
+            [postId]
+        );
+
+        return newComment.rows[0];
+    }catch(err){
+        console.log(err);
+        return;
+    }
+}
+
+
 
 module.exports = 
 {
@@ -219,5 +245,6 @@ module.exports =
     addCommentByPost,
     deleteCommentById,
     getUserById,
-    updateCommentById
+    updateCommentById,
+    createComment
 };

@@ -4,7 +4,7 @@ const sharp = require('sharp');
 const { PutObjectCommand, GetObjectCommand, S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { pool } = require('../config/dbConf');
-const { deletePostById, getMyPosts, uploadPost, getPostById, generateFileName, toggleLike, getLikeStatus, getUserById, getCommnetsByPost, deleteCommentById, updateCommentById} = require('../controllers/dashboardController');
+const { deletePostById, getMyPosts, uploadPost, getPostById, generateFileName, toggleLike, getLikeStatus, getUserById, getCommnetsByPost, deleteCommentById, updateCommentById, createComment} = require('../controllers/dashboardController');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -215,7 +215,21 @@ router.put('/posts/:id/comments/:commentId',express.json(), async (req, res) => 
     }
   } catch (error) {
     console.error('Error updating comment:', error);
-    res.status(500).json({ message: 'Error updating comment.',  success: falseh });
+    res.status(500).json({ message: 'Error updating comment.',  success: false });
+  }
+});
+
+router.post('/posts/:id/comments', express.json(), async (req, res) => {
+  const postId = req.body.postId;
+  const userId = req.body.userId
+  const commentText = req.body.commentText;
+  try {
+    const comment = await createComment(postId, userId, commentText);
+    console.log(comment.id)
+    res.status(200).json({ commentId: comment.id, success: true });
+  } catch (error) {
+    console.error('Error creating comment:', error);
+    res.status(500).json({ message: 'Error creating comment.' });
   }
 });
 
