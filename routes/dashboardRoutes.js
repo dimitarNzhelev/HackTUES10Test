@@ -131,6 +131,18 @@ router.post('/myposts/:id/update', upload.single('photo'), async (req, res) => {
   }
 });
 
+router.post('/myposts/:id/like', async (req, res) => {
+  const postId = parseInt(req.params.id);
+  const userId = req.user.id;
+  try {
+    await toggleLike(postId, userId);
+    res.status(200).json({ message: 'Toggle like successful.' });
+  } catch (error) {
+    console.error('Error toggling like:', error);
+    res.status(500).json({ message: 'Error toggling like.' });
+  }
+});
+
 router.get('/posts', async (req, res) => {
     const posts = (await pool.query("SELECT * FROM posts")).rows;
     for(const post of posts){
@@ -143,18 +155,6 @@ router.get('/posts', async (req, res) => {
     }
     res.render("posts", {posts: posts});
 })
-
-router.post('/myposts/:id/like', async (req, res) => {
-  const postId = parseInt(req.params.id);
-  const userId = req.user.id;
-  try {
-    await toggleLike(postId, userId);
-    res.status(200).json({ message: 'Toggle like successful.' });
-  } catch (error) {
-    console.error('Error toggling like:', error);
-    res.status(500).json({ message: 'Error toggling like.' });
-  }
-});
 
 router.get('/posts/:id/likeStatus', async (req, res) => {
   const postId = parseInt(req.params.id);
