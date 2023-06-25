@@ -4,7 +4,7 @@ const sharp = require('sharp');
 const { PutObjectCommand, GetObjectCommand, S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { pool } = require('../config/dbConf');
-const { deletePostById, getMyPosts, uploadPost, getPostById, generateFileName, toggleLike, getLikeStatus} = require('../controllers/dashboardController');
+const { deletePostById, getMyPosts, uploadPost, getPostById, generateFileName, toggleLike, getLikeStatus, getUserById, getCommnetsByPost} = require('../controllers/dashboardController');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -162,5 +162,32 @@ router.get('/myposts/:id/likeStatus', async (req, res) => {
     console.error('Error getting like status:', error);
     res.status(500).json({ message: 'Error getting like status.' });
   }
+});
+
+router.get('/posts/:id/comments', async (req, res) => {
+  const postId = parseInt(req.params.id);
+  try {
+    const comments = (await pool.query('SELECT * FROM comments WHERE post_id = $1', [postId])).rows;
+    res.status(200).json({ comments });
+  } catch (error) {
+    console.error('Error getting comments:', error);
+    res.status(500).json({ message: 'Error getting comments.' });
+  }
+});
+
+router.get('/posts/:id', async (req, res) => {
+  const postId = req.params.id;
+  const postData = await getPostById(postId);
+  const userId = postData.user_id;
+  const userData = await getUserById(userId); 
+  postData.imageUrl = "https://d2skheuztgfb2.cloudfront.net/" + postData.imagename
+  const comments = await getCommnetsByPost(postId); 
+  console.log(comments);
+  for(let i = 0; i < comments.length; i++) {
+    let user = await getUserById(comments[i].user_id);
+    comments[i].username = user.name;
+}
+
+  res.render('post', { post: postData, user: userData, comments: comments });
 });
 module.exports = router;

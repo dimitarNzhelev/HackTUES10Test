@@ -23,6 +23,15 @@ const s3 = new S3Client({
 
 const generateFileName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex')
 
+async function getUserById(id){
+    const result = await pool.query(
+        `SELECT * FROM users WHERE id = $1`,
+        [id]
+    );
+
+    return result.rows[0];
+}
+
 async function toggleLike(postId, userId) {
     const client = await pool.connect();
   
@@ -166,13 +175,16 @@ async function addCommentByPost(postId, userId, comment){
     }
 }
 
-async function deleteCommentById(commentId){
+async function deleteCommentById(commentId, user_id){
     const result = await pool.query(`SELECT * FROM comments WHERE id = $1`, [commentId]);
     if(result.rows.length === 0){
             return;
         }
-    await pool.query('DELETE FROM comments WHERE id = $1', [commentId]);
-    return true;
+    if(result.rows[0].user_id == user_id){
+        await pool.query('DELETE FROM comments WHERE id = $1', [commentId]);
+        return true;
+    }
+    return false;
 }
 
 module.exports = 
@@ -186,5 +198,6 @@ module.exports =
     getLikeStatus,
     getCommnetsByPost,
     addCommentByPost,
-    deleteCommentById
+    deleteCommentById,
+    getUserById
 };

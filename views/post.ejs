@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <% if(typeof post != "undefined" && typeof user != "undefined") { %>
+    <title><%= post.caption%></title>
+    <% } %>
+</head>
+<body>
+    <% if(typeof post != "undefined" && typeof user != "undefined") { %>
+    <h1><%= post.caption%></h1>
+    <p><%= post.description%></p>
+    <p>Total likes: <%= post.totallikes %></p>
+    <p>Total comments: <%= post.totalcomments %></p>
+    <p>Posted by: <%= user.name %></p>
+    <img src="<%= post.imageUrl %>" width=300 height=300 />
+   
+    <% if(comments && comments.length > 0) { %>
+        <% comments.forEach((comment) => { %>
+            <div style="background-color:aqua">
+            <p><%= comment.comment_text %></p>
+            <p>Posted by: <%= comment.username %></p>
+            <% if (comment.user_id == user.id){ %>
+                <button>Update</button>
+                <button>Delete</button>
+            <%} %>
+        </div>
+            <% }); %>
+    <% } %>
+    <% } %>
+    <a href="dashboard/posts">Back to dashboard</a>
+</body>
+</html>

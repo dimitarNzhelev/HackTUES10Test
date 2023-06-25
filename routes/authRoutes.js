@@ -55,6 +55,24 @@ router.post("/login",
     })
 );
 
+router.get('/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const userResult = await pool.query(`SELECT * FROM users WHERE id = $1`, [id]);
+        
+        if (userResult.rows.length === 0) {
+            res.status(404).send('User not found');
+            return;
+        }
+
+        res.status(200).json(userResult.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'An error occurred while fetching the user' });
+    }
+});
+
+
 router.get("/logout", (req, res) => {
     req.logOut(function(err) {
         if(err)
