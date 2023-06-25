@@ -19,6 +19,7 @@ router.get('/', async (req, res) => {
         keyPairId: process.env.CDN_KEY_PAIR_ID
     })
     }
+    console.log("IVAA" , req.user);
     res.render("posts", {posts: posts});
 })
 
@@ -37,9 +38,8 @@ router.get('/:id', async (req, res) => {
     for(let i = 0; i < comments.length; i++) {
       let user = await getUserById(comments[i].user_id);
       comments[i].username = user.name;
-  }
-  
-    res.render('post', { post: postData, user: userData, comments: comments });
+  }  
+    res.render('post', { post: postData, user: userData, guest: req.user, comments: comments });
   });
   
 

@@ -112,9 +112,6 @@
 
         function addComment(postId, userId, username) {
             const newCommentInput = document.createElement('input');
-            console.log("post id", postId);
-            console.log("user id", userId);
-            console.log("username", username);
             newCommentInput.type = 'text';
             newCommentInput.id = 'new_comment_input';
             newCommentInput.placeholder = 'Write your comment here';
@@ -149,7 +146,6 @@
                                 <button class="comment-button" onclick="deleteCommentById('${data.commentId}', '${postId}')">Delete</button>
                             `;
 
-                            console.log(data);
 
                             contentDiv.replaceChild(newCommentDiv, newCommentInput);
 
@@ -175,7 +171,6 @@
                 if (response.ok) {
                 const data = await response.json();
                 const totalLikes = data.totalLikes;
-                console.log(totalLikes);
                return totalLikes;
                 } else {
                 throw new Error('Failed to fetch total likes');
@@ -196,19 +191,15 @@
                     const totalLikes = document.getElementById(`total-likes`);
 
                     const newLikes = await getTotalLikes(id);
-                    console.log("TOTAL LIKES: ", newLikes);
                     totalLikes.textContent = `Total likes: ${newLikes}`;
 
                     const likeStatus = await isLiked(id);
-                    console.log("LIKE STATUS: ", likeStatus)
 
                     const heartIcon = document.getElementById(`heart-icon`);
                     if(likeStatus){
                         heartIcon.classList.remove('far', 'fa-heart');
                         heartIcon.classList.add('fas', 'fa-heart');
-                        console.log("add fill");
                     }else{
-                        console.log("remove fill");
                         heartIcon.classList.remove('fas', 'fa-heart');
                         heartIcon.classList.add('far', 'fa-heart');
                     }
@@ -231,7 +222,6 @@
                 if (response.ok) {
                 const data = await response.json();
                 const likeStatus = data.likeStatus;
-                console.log(likeStatus);
                return likeStatus;
                 } else {
                 throw new Error('Failed to fetch like status');
@@ -260,14 +250,11 @@
             
             async function checkLikeStatus() {
                 const likeStatus = await isLiked('<%= post.id %>');
-                console.log("LIKE STATUS: ", likeStatus)
         
                 if(likeStatus){
                     heartIcon.classList.remove('far', 'fa-heart');
                     heartIcon.classList.add('fas', 'fa-heart');
-                    console.log("add fill");
                 }else{
-                    console.log("remove fill");
                     heartIcon.classList.remove('fas', 'fa-heart');
                     heartIcon.classList.add('far', 'fa-heart');
                 }
@@ -281,7 +268,7 @@
         <p>Posted by: <%= user.name %></p>
         <img class="post-image" src="<%= post.imageUrl %>" />
         <a href="/dashboard/posts">Back to dashboard</a>
-        <button class="comment-button" onclick="addComment('<%= post.id %>', '<%= user.id %>', '<%= user.name %>')" >Add comment</button>
+        <button class="comment-button" onclick="addComment('<%= post.id %>', '<%= guest.id %>', '<%= guest.name%>')" >Add comment</button>
 
         <% if(comments && comments.length > 0) { %>
             <% comments.forEach((comment) => { %>
@@ -289,9 +276,7 @@
                 <h1>Comment</h1>
                 <p id="comment_<%= comment.id %>"><%= comment.comment_text %></p>
                 <p>Posted by: <%= comment.username %></p>
-                <% if (comment.user_id == user.id){ %>
-                    <% console.log("comment: ", comment) %>
-                    <% console.log("user: ", user) %>"
+                <% if (comment.user_id == guest.id){ %>
                     <button class="comment-button" onclick="editComment('<%= comment.id %>', '<%= post.id %>')">Update</button>
                     <button class="comment-button" onclick="deleteCommentById('<%= comment.id %>', '<%= post.id %>')">Delete</button>
                 <%} %>
