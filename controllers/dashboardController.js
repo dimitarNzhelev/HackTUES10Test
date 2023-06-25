@@ -4,12 +4,14 @@ const sharp = require('sharp');
 const crypto = require('crypto');
 const { pool } = require('../config/dbConf');
 const { getSignedUrl } = require("@aws-sdk/cloudfront-signer");
+const { CloudFrontClient, CreateInvalidationCommand } = require("@aws-sdk/client-cloudfront")
 dotenv.config();
 
 const bucketName = process.env.BUCKET_NAME
 const bucketRegion = process.env.BUCKET_REGION
 const accessKey = process.env.ACCESS_KEY
 const secretAccessKey = process.env.SECRET_ACCESS_KEY
+const cloudFontDistId = process.env.CLOUDFRONT_DIST_ID
 
 const s3 = new S3Client({
     credentials: {
@@ -17,6 +19,15 @@ const s3 = new S3Client({
         secretAccessKey: secretAccessKey
     },
     region: bucketRegion
+});
+
+
+const cloudfront = new CloudFrontClient({
+  credentials: {
+    accessKeyId: accessKey,
+    secretAccessKey: secretAccessKey,
+  },
+  region: bucketRegion
 });
 
 
@@ -131,6 +142,22 @@ async function deletePostById(id){
   
     const command = new DeleteObjectCommand(params);
     await s3.send(command);
+
+    const invalidationParams = {
+            DistributionId: cloudFontDistId,
+            InvalidationBatch: {
+                CallerReference: result.rows[0].imagename,
+                Paths: {
+                    Quantity: 1,
+                    Items: [
+                        "/" + result.rows[0].imagename
+                    ]
+                }
+        }
+    }
+
+    const invalidationCommand = new CreateInvalidationCommand(invalidationParams);
+    await cloudfront.send(invalidationCommand);
 
     await pool.query('DELETE FROM likes WHERE post_id = $1', [id])
     await pool.query('DELETE FROM comments WHERE post_id = $1', [id])
