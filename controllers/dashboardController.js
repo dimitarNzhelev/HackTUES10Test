@@ -3,7 +3,7 @@ const { PutObjectCommand, GetObjectCommand, S3Client, DeleteObjectCommand } = re
 const sharp = require('sharp');
 const crypto = require('crypto');
 const { pool } = require('../config/dbConf');
-
+const { getSignedUrl } = require("@aws-sdk/cloudfront-signer");
 dotenv.config();
 
 const bucketName = process.env.BUCKET_NAME
@@ -107,7 +107,13 @@ async function getMyPosts(req){
     );
 
     for(const post of result.rows){
-        post.imageUrl = "https://d2skheuztgfb2.cloudfront.net/" + post.imagename
+        post.imageUrl = getSignedUrl({
+            url: "https://d2skheuztgfb2.cloudfront.net/" + post.imagename,
+            dateLessThan: new Date(Date.now() + 60 * 60 * 1000 * 24),
+            privateKey: process.env.CDN_PRIVATE_KEY,
+            keyPairId: process.env.CDN_KEY_PAIR_ID
+        })
+        console.log(post.imageUrl)
     }
 
     return result.rows;

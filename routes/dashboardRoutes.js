@@ -2,10 +2,11 @@ const express = require('express');
 const multer = require('multer');
 const sharp = require('sharp');
 const { PutObjectCommand, GetObjectCommand, S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
-const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { pool } = require('../config/dbConf');
 const { deletePostById, getMyPosts, uploadPost, getPostById, generateFileName, toggleLike, getLikeStatus, getUserById, getCommnetsByPost, deleteCommentById, updateCommentById, createComment, getTotalLikes} = require('../controllers/dashboardController');
 const dotenv = require('dotenv');
+const { getSignedUrl } = require("@aws-sdk/cloudfront-signer");
+
 dotenv.config();
 
 const bucketName = process.env.BUCKET_NAME
@@ -133,7 +134,12 @@ router.post('/myposts/:id/update', upload.single('photo'), async (req, res) => {
 router.get('/posts', async (req, res) => {
     const posts = (await pool.query("SELECT * FROM posts")).rows;
     for(const post of posts){
-        post.imageUrl = "https://d2skheuztgfb2.cloudfront.net/" + post.imagename
+      post.imageUrl = getSignedUrl({
+        url: "https://d2skheuztgfb2.cloudfront.net/" + post.imagename,
+        dateLessThan: new Date(Date.now() + 60 * 60 * 1000 * 24),
+        privateKey: process.env.CDN_PRIVATE_KEY,
+        keyPairId: process.env.CDN_KEY_PAIR_ID
+    })
     }
     res.render("posts", {posts: posts});
 })
@@ -178,7 +184,12 @@ router.get('/posts/:id', async (req, res) => {
   const postData = await getPostById(postId);
   const userId = postData.user_id;
   const userData = await getUserById(userId); 
-  postData.imageUrl = "https://d2skheuztgfb2.cloudfront.net/" + postData.imagename
+  postData.imageUrl = getSignedUrl({
+    url: "https://d2skheuztgfb2.cloudfront.net/" + postData.imagename,
+    dateLessThan: new Date(Date.now() + 60 * 60 * 1000 * 24),
+    privateKey: process.env.CDN_PRIVATE_KEY,
+    keyPairId: process.env.CDN_KEY_PAIR_ID
+})
   const comments = await getCommnetsByPost(postId); 
   for(let i = 0; i < comments.length; i++) {
     let user = await getUserById(comments[i].user_id);
