@@ -4,7 +4,7 @@ const sharp = require('sharp');
 const { PutObjectCommand, GetObjectCommand, S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { pool } = require('../config/dbConf');
-const { deletePostById, getMyPosts, uploadPost, getPostById, generateFileName, toggleLike, getLikeStatus, getUserById, getCommnetsByPost} = require('../controllers/dashboardController');
+const { deletePostById, getMyPosts, uploadPost, getPostById, generateFileName, toggleLike, getLikeStatus, getUserById, getCommnetsByPost, deleteCommentById} = require('../controllers/dashboardController');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -59,7 +59,6 @@ router.get('/myposts', async (req, res) => {
 
 router.delete('/myposts/:id', async (req, res) => {
     const id = req.params.id;
-      console.log(id);
     if(await deletePostById(id)){
     res.status(200).send('Post deleted successfully');
     }else{
@@ -80,7 +79,6 @@ router.get('/myposts/:id/update', async (req, res) => {
 router.post('/myposts/:id/update', upload.single('photo'), async (req, res) => {
   const id = req.params.id;
   const { caption, description } = req.body;
-  console.log( caption, description)
 
   try {
     if(req.file){
@@ -182,7 +180,6 @@ router.get('/posts/:id', async (req, res) => {
   const userData = await getUserById(userId); 
   postData.imageUrl = "https://d2skheuztgfb2.cloudfront.net/" + postData.imagename
   const comments = await getCommnetsByPost(postId); 
-  console.log(comments);
   for(let i = 0; i < comments.length; i++) {
     let user = await getUserById(comments[i].user_id);
     comments[i].username = user.name;
@@ -190,4 +187,20 @@ router.get('/posts/:id', async (req, res) => {
 
   res.render('post', { post: postData, user: userData, comments: comments });
 });
+
+router.delete('/posts/:id/comments/:commentId', async (req, res) => {
+  const commentId = req.params.commentId;
+  try {
+    const result = await deleteCommentById(commentId);
+    if(result){
+      res.status(200).json({ message: 'Comment deleted successfully.' });
+    } else {
+      res.status(404).json({ message: 'Comment not found.' });
+    }
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    res.status(500).json({ message: 'Error deleting comment.' });
+  }
+});
+
 module.exports = router;

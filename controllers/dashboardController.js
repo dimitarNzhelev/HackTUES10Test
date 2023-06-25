@@ -84,7 +84,6 @@ async function toggleLike(postId, userId) {
 }
 
 async function uploadPost(req){
-    console.log(req.file);
     if(req.file){
     const fileBuffer = await sharp(req.file.buffer).resize({width: 400, height: 400, fit: "contain"}).toBuffer();
     const fileName = generateFileName();
@@ -180,11 +179,15 @@ async function deleteCommentById(commentId, user_id){
     if(result.rows.length === 0){
             return;
         }
-    if(result.rows[0].user_id == user_id){
-        await pool.query('DELETE FROM comments WHERE id = $1', [commentId]);
-        return true;
-    }
-    return false;
+    // if(result.rows[0].user_id == user_id){ TOVA GO PROVERQVAM OSHTE V FRONTENDA
+        const res = await pool.query('DELETE FROM comments WHERE id = $1', [commentId]);
+        if(res){
+            return true;
+        }else{
+            return false;
+        }
+    // }
+
 }
 
 module.exports = 

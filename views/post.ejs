@@ -7,28 +7,81 @@
     <% if(typeof post != "undefined" && typeof user != "undefined") { %>
     <title><%= post.caption%></title>
     <% } %>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .content {
+            margin: 2em;
+        }
+        .post-image {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+        }
+        .comment {
+            background-color: lightgrey;
+            margin: 1em 0;
+            padding: 1em;
+            border-radius: 10px;
+        }
+        .comment-button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .comment-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+    <script>
+        async function deleteCommentById(id, postId) {
+            fetch("/dashboard/posts/" + postId + "/comments/" + id, {
+                method: "DELETE"
+            }).then(response => {
+                if(response.ok){
+                    window.location.reload();
+                } else {
+                    console.error("Failed to delete comment");
+                }
+            })
+        }
+    </script>
 </head>
 <body>
     <% if(typeof post != "undefined" && typeof user != "undefined") { %>
-    <h1><%= post.caption%></h1>
-    <p><%= post.description%></p>
-    <p>Total likes: <%= post.totallikes %></p>
-    <p>Total comments: <%= post.totalcomments %></p>
-    <p>Posted by: <%= user.name %></p>
-    <img src="<%= post.imageUrl %>" width=300 height=300 />
-   
-    <% if(comments && comments.length > 0) { %>
-        <% comments.forEach((comment) => { %>
-            <div style="background-color:aqua">
-            <p><%= comment.comment_text %></p>
-            <p>Posted by: <%= comment.username %></p>
-            <% if (comment.user_id == user.id){ %>
-                <button>Update</button>
-                <button>Delete</button>
-            <%} %>
-        </div>
+    <div class="content">
+        <h1><%= post.caption%></h1>
+        <p><%= post.description%></p>
+        <p>Total likes: <%= post.totallikes %></p>
+        <% console.log(post.id) %>
+        <p>Total comments: <%= post.totalcomments %></p>
+        <p>Posted by: <%= user.name %></p>
+        <img class="post-image" src="<%= post.imageUrl %>" />
+
+        <% if(comments && comments.length > 0) { %>
+            <% comments.forEach((comment) => { %>
+            <div class="comment">
+                <h1>Comment</h1>
+                <p><%= comment.comment_text %></p>
+                <p>Posted by: <%= comment.username %></p>
+                <% if (comment.user_id == user.id){ %>
+                    <button class="comment-button">Update</button>
+                    <button class="comment-button" onclick="deleteCommentById('<%= comment.id %>', '<%= post.id %>')">Delete</button>
+                <%} %>
+            </div>
             <% }); %>
-    <% } %>
+        <% } %>
+    </div>
     <% } %>
     <a href="dashboard/posts">Back to dashboard</a>
 </body>
