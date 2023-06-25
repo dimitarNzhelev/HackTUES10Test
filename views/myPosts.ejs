@@ -5,42 +5,81 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 
   <style>
+    body {
+      background-color: #f0f0f0;
+    }
+
+    h1 {
+      text-align: center;
+      padding-top: 2rem;
+      color: #2c3e50;
+      font-size: 100px;
+    }
+
+    a {
+      color: #2980b9;
+      text-decoration: none;
+      font-size: 80px;
+    }
+
+    a:hover {
+      color: #3498db;
+    }
+
+    .go-back-link {
+      display: block;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
     .post-container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
+
+    /* .post-container .post {
+      flex: 1 0 20%;
+      margin: 1rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-    }
+    } */
 
-    .post-image {
-      margin-top: 20px;
-      width: 300px;
-      height: 300px;
+    img {
+      width: 100%;
+      height: auto;
+      border-radius: 15px;
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    .post {
+      width: 20%;
+      margin:2% 2.5%;
     }
 
     .post-buttons {
       display: flex;
-      justify-content: center;
-      margin-top: 20px;
+      width: 100%;
+      justify-content: space-between;
     }
 
-    .like-button {
-      background-color: transparent;
-      border: none;
-      cursor: pointer;
-      display: inline-block;
+    .post-buttons button {
+      margin-top: 10px;
+      width: 48%;
+      height: 100px; 
+      font-size: 60px;
+      box-sizing: border-box;
+      border-radius: 10px;
     }
 
-    .like-button i {
-      font-size: 24px;
-      color: #888;
-    }
+    
 
   </style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>My Posts</title>
   <script>
-function deletePost(id) {
+    function deletePost(id) {
       console.log(id);
       fetch(`/dashboard/myposts/${id}`, {
         method: 'DELETE'
@@ -57,25 +96,26 @@ function deletePost(id) {
       });
     }
 
-function updatePost(id) {
+    function updatePost(id) {
       window.location.href = `/dashboard/myposts/${id}/update`;
     }
-
   </script>
 </head>
 <body>
   <h1>My posts</h1>
-  <a href="/dashboard">Go back</a>
+  <a class="go-back-link" href="/dashboard">Go back</a>
   <% if(typeof posts != "undefined") { %>
-    <% posts.forEach(post => { %>
-      <div class="post-container">
-        <img class="post-image" src="<%= post.imageUrl %>" />
-        <div class="post-buttons">
-          <button onclick="deletePost('<%= post.id %>')">Delete</button>
-          <button onclick="updatePost('<%= post.id %>')">Update</button>
+    <div class="post-container">
+      <% posts.forEach(post => { %>
+        <div class="post">
+          <img src="<%= post.imageUrl %>" />
+          <div class="post-buttons">
+            <button onclick="updatePost('<%= post.id %>')">Update</button>
+            <button onclick="deletePost('<%= post.id %>')">Delete</button>
+          </div>
         </div>
-      </div>
-    <% }) %>
+      <% }) %>
+    </div>
   <% } %>
 </body>
 </html>

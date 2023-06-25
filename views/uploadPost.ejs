@@ -1,19 +1,79 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Upload Image</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css">
+  <style>
+    body {
+      background-color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    h2 {
+      color: #2c3e50;
+      font-size: 200px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      color: #2c3e50;
+      font-size: 100px;
+    }
+
+    input[type="text"],
+    input[type="file"] {
+      margin-bottom: 1rem;
+      padding: 80px;
+      font-size: 150px;
+      border-radius: 20px;
+    }
+
+    input[type="submit"] {
+      cursor: pointer;
+      font-size: 100px;
+      height: 100px;
+      text-align: center;
+      align-self: center;
+      border-radius: 20px;
+    }
+
+    a {
+      color: #2980b9;
+      margin-top: 1rem;
+      text-decoration: none;
+      transition: color 0.2s ease-in-out;
+      font-size: 100px;
+    }
+
+    a:hover {
+      color: #3498db;
+    }
+  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Upload Image</title>
 </head>
 <body>
-    <h2>Upload Image</h2>
-    <form action="/dashboard/upload" method="post" enctype="multipart/form-data">
-        <label for="caption">Caption:</label><br>
-        <input type="text" id="caption" name="caption"><br><br>
-        <label for="description">Description:</label><br>
-        <input type="text" id="description" name="description"><br><br>
-        <label for="imageUpload">Upload an Image:</label><br>
-        <input type="file" name="photo" id="imageUpload"><br><br>
-        <input type="submit" value="Upload">
-    </form>
-    <a href="/dashboard/">Back</a>
+  <h2>Upload Image</h2>
+  <form action="/dashboard/upload" method="post" enctype="multipart/form-data">
+    <label for="caption">Caption:</label><br>
+    <input type="text" id="caption" name="caption"><br><br>
+    <label for="description">Description:</label><br>
+    <input type="text" id="description" name="description"><br><br>
+    <label for="imageUpload">Upload an Image:</label><br>
+    <input type="file" name="photo" id="imageUpload"><br><br>
+    <input type="submit" value="Upload">
+  </form>
+  <a href="/dashboard/">Back</a>
 </body>
 </html>

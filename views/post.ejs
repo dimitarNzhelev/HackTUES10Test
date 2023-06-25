@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <% if(typeof post != "undefined" && typeof user != "undefined") { %>
-    <title><%= post.caption%></title>
+    <title><%= post.caption %></title>
     <% } %>
     <style>
         body {
@@ -15,34 +15,114 @@
             padding: 0;
             background-color: #f4f4f4;
         }
-        .content {
-            margin: 2em;
-        }
-        .post-image {
-            width: 100%;
-            max-width: 300px;
-            height: auto;
-        }
-        .comment {
-            background-color: lightgrey;
+
+        h1 {
+            text-align: center;
             margin: 1em 0;
-            padding: 1em;
-            border-radius: 10px;
+            font-size: 40px;
+            color: #333;
         }
-        .comment-button {
-            background-color: #007BFF;
+
+        p {
+            margin: 0.5em 0;
+            font-size: 20px;
+            color: #555;
+        }
+
+        a {
+            font-size: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        button {
+            font-size: 18px;
+            height: 40px;
+            width: 160px;
+            background-color: #007bff;
             color: #fff;
             border: none;
-            padding: 10px;
-            border-radius: 5px;
-            text-align: center;
-            justify-content: center;
+            border-radius: 4px;
             cursor: pointer;
         }
+
+        .content {
+            margin: 2em;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 2em;
+        }
+
+        .post-image {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .comment-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-gap: 1em;
+        }
+
+        .comment {
+            background-color: #f0f0f0;
+            padding: 1em;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .comment h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .comment p {
+            margin: 0.5em 0 0;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .comment-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
         .comment-button:hover {
             background-color: #0056b3;
         }
 
+        .like-button {
+            background-color: transparent;
+            border: none;
+            padding: 0;
+            font-size: 30px;
+            color: #007bff;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .like-button:hover {
+            color: #0056b3;
+        }
+
+        .like-button i {
+            transition: color 0.2s ease-in-out;
+        }
+
+        .like-button i.fas {
+            color: #e74c3c;
+        }
     </style>
 
     <script>
@@ -234,57 +314,56 @@
     </script>
 </head>
 <body>
+<% if(typeof post != "undefined" && typeof user != "undefined") { %>
+<div class="content">
+    <h1><%= post.caption %></h1>
+    <p><%= post.description %></p>
+    <p id="total-likes">Total likes: <%= post.totallikes %></p>
+    <p id="totalcomments">Total comments: <%= post.totalcomments %></p>
+    <button id="like-button" class="like-button" onclick="likePost('<%= post.id %>')">
+        <i id="heart-icon" class="far fa-heart"></i>
+    </button>
 
-    <% if(typeof post != "undefined" && typeof user != "undefined") { %>
-    <div class="content">
-        <h1><%= post.caption%></h1>
-        <p><%= post.description%></p>
-        <p id="total-likes">Total likes: <%= post.totallikes %></p>
-        <p id="totalcomments">Total comments: <%= post.totalcomments %></p>
-        <button id="like-button" class="like-button" onclick="likePost('<%= post.id %>')">
-            <i id="heart-icon" class="far fa-heart"></i>
-        </button>
+    <script>
+        const heartIcon = document.getElementById(`heart-icon`);
 
-        <script>
-            const heartIcon = document.getElementById(`heart-icon`);
-            
-            async function checkLikeStatus() {
-                const likeStatus = await isLiked('<%= post.id %>');
-        
-                if(likeStatus){
-                    heartIcon.classList.remove('far', 'fa-heart');
-                    heartIcon.classList.add('fas', 'fa-heart');
-                }else{
-                    heartIcon.classList.remove('fas', 'fa-heart');
-                    heartIcon.classList.add('far', 'fa-heart');
-                }
+        async function checkLikeStatus() {
+            const likeStatus = await isLiked('<%= post.id %>');
+
+            if(likeStatus){
+                heartIcon.classList.remove('far', 'fa-heart');
+                heartIcon.classList.add('fas', 'fa-heart');
+            }else{
+                heartIcon.classList.remove('fas', 'fa-heart');
+                heartIcon.classList.add('far', 'fa-heart');
             }
-        
-            checkLikeStatus();
-        </script>
-        
-    
-          
-        <p>Posted by: <%= user.name %></p>
-        <img class="post-image" src="<%= post.imageUrl %>" />
-        <a href="/dashboard/posts">Back to dashboard</a>
-        <button class="comment-button" onclick="addComment('<%= post.id %>', '<%= guest.id %>', '<%= guest.name%>')" >Add comment</button>
+        }
 
-        <% if(comments && comments.length > 0) { %>
-            <% comments.forEach((comment) => { %>
-            <div class="comment">
-                <h1>Comment</h1>
-                <p id="comment_<%= comment.id %>"><%= comment.comment_text %></p>
-                <p>Posted by: <%= comment.username %></p>
-                <% if (comment.user_id == guest.id){ %>
-                    <button class="comment-button" onclick="editComment('<%= comment.id %>', '<%= post.id %>')">Update</button>
-                    <button class="comment-button" onclick="deleteCommentById('<%= comment.id %>', '<%= post.id %>')">Delete</button>
-                <%} %>
-            </div>
-            <% }); %>
-        <% } %>
+        checkLikeStatus();
+    </script>
+
+    <p>Posted by: <%= user.name %></p>
+    <img class="post-image" src="<%= post.imageUrl %>" />
+    <br>
+    <a href="/dashboard/posts">Back to dashboard</a>
+    <button class="comment-button" onclick="addComment('<%= post.id %>', '<%= guest.id %>', '<%= guest.name %>')">Add comment</button>
+
+    <% if(comments && comments.length > 0) { %>
+    <div class="comment-container">
+        <% comments.forEach((comment) => { %>
+        <div class="comment">
+            <h1>Comment</h1>
+            <p id="comment_<%= comment.id %>"><%= comment.comment_text %></p>
+            <p>Posted by: <%= comment.username %></p>
+            <% if (comment.user_id == guest.id){ %>
+            <button class="comment-button" onclick="editComment('<%= comment.id %>', '<%= post.id %>')">Update</button>
+            <button class="comment-button" onclick="deleteCommentById('<%= comment.id %>', '<%= post.id %>')">Delete</button>
+            <% } %>
+        </div>
+        <% }); %>
     </div>
     <% } %>
-
+</div>
+<% } %>
 </body>
 </html>
