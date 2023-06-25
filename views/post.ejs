@@ -161,11 +161,31 @@
                 }
             });
         }   
-    
+  
+
+        async function getTotalLikes(id){
+            try {
+                const response = await fetch(`/dashboard/posts/like/${id}/total`, {
+                method: 'GET'
+                });
+
+                if (response.ok) {
+                const data = await response.json();
+                const totalLikes = data.totalLikes;
+                console.log(totalLikes);
+               return totalLikes;
+                } else {
+                throw new Error('Failed to fetch total likes');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+     
         async function likePost(id) {
             const heartIcon = document.getElementById(`heart-icon`);
 
-            fetch(`/dashboard/myposts/${id}/like`, {
+            fetch(`/dashboard/posts/like/${id}`, {
                 method: 'POST'
             })
             .then(async response => {
@@ -201,7 +221,7 @@
 
         async function isLiked(id) {
             try {
-                const response = await fetch(`/dashboard/posts/${id}/likeStatus`, {
+                const response = await fetch(`/dashboard/posts/like/${id}/status`, {
                 method: 'GET'
                 });
 
@@ -218,25 +238,6 @@
             }
             }
 
-        async function getTotalLikes(id){
-            try {
-                const response = await fetch(`/dashboard/posts/${id}/totalLikes`, {
-                method: 'GET'
-                });
-
-                if (response.ok) {
-                const data = await response.json();
-                const totalLikes = data.totalLikes;
-                console.log(totalLikes);
-               return totalLikes;
-                } else {
-                throw new Error('Failed to fetch total likes');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-            }
-     
     </script>
 </head>
 <body>
