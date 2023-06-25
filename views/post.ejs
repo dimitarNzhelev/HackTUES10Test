@@ -74,12 +74,22 @@
                     updateComment(commentId, postid);
                 }
             });
+            inputElement.addEventListener('keydown', function(event) {
+                if(event.key === 'Escape') {
+                    event.preventDefault();
+                    commentElement.innerHTML = commentText;
+                }
+            });
         }
 
         function updateComment(commentId, postId) {
             const inputElement = document.getElementById(`input_${commentId}`);
             const updatedText = inputElement.value;
             const commentElement = document.getElementById(`comment_${commentId}`);
+            if(updatedText === "") {
+                alert("Comment cannot be empty");
+                return;
+            }
             commentElement.innerHTML = updatedText;
             fetch(`/dashboard/posts/${postId}/comments/${commentId}`, {
                 method: 'PUT',

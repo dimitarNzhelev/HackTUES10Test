@@ -206,6 +206,7 @@ router.delete('/posts/:id/comments/:commentId', async (req, res) => {
 router.put('/posts/:id/comments/:commentId',express.json(), async (req, res) => {
   const commentId = req.params.commentId;
   const commentText = req.body.commentText;
+  if(commentText.length > 0){
   try {
     const result = await updateCommentById(commentId, commentText);
     if(result){
@@ -216,6 +217,9 @@ router.put('/posts/:id/comments/:commentId',express.json(), async (req, res) => 
   } catch (error) {
     console.error('Error updating comment:', error);
     res.status(500).json({ message: 'Error updating comment.',  success: false });
+  }
+  }else {
+    return;
   }
 });
 
