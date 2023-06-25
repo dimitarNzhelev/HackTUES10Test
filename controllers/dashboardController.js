@@ -125,6 +125,9 @@ async function deletePostById(id){
   
     const command = new DeleteObjectCommand(params);
     await s3.send(command);
+
+    await pool.query('DELETE FROM likes WHERE post_id = $1', [id])
+    await pool.query('DELETE FROM comments WHERE post_id = $1', [id])
     await pool.query('DELETE FROM posts WHERE id = $1', [id]);
 
     return true;
