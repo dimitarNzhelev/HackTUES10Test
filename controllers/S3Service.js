@@ -1,6 +1,5 @@
-const { PutObjectCommand, GetObjectCommand, S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
+const {  S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { CloudFrontClient, CreateInvalidationCommand } = require("@aws-sdk/client-cloudfront");
-const sharp = require('sharp');
 const crypto = require('crypto');
 const dotenv = require('dotenv');
 const {pool} = require('../config/dbConf');

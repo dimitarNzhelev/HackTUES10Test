@@ -34,7 +34,7 @@ app.use(passport.session());
 app.use(flash());
 
 var corsOptions = {
-    origin: 'spahsbashtati.com',
+    origin: 'https://hacktues10-imgur-fjt5c.ondigitalocean.app/',
     optionsSuccessStatus: 200 
   }
   

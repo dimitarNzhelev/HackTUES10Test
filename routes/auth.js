@@ -87,7 +87,7 @@ router.get('/:id', async (req, res) => {
 
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
-      return res.redirect("/users/dashboard");
+      return res.redirect("/dashboard");
     }
     next();
   }
