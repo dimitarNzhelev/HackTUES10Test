@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { getPostById, getUserById, getCommnetsByPost } = require('../controllers/dashboardController');
+const { getPostById } = require('../controllers/postController');
+const {getUserById } = require('../controllers/userController');
+const {getCommnetsByPost} = require('../controllers/commentController');
 const {getSignedUrl} = require('@aws-sdk/cloudfront-signer');
 const { checkNotAuthenticated } = require('../middleware/authentication');
 const { pool } = require('../config/dbConf');

@@ -3,7 +3,7 @@ const validator = require('validator');
 const passport = require('passport');
 const {validateUser, insertUserAndSendEmail} = require('../controllers/authController');
 const router = express.Router();
-
+const {pool} = require('../config/dbConf');
 
 
 router.get('/register', checkAuthenticated,(req, res) =>{
@@ -55,6 +55,17 @@ router.post("/login",
     })
 );
 
+router.get("/logout", (req, res) => {
+    req.logOut(function(err) {
+        if(err)
+        {
+            return next(err);
+        }
+        res.render("index", { message: "You have logged out successfully" });
+    });
+   
+}); 
+
 router.get('/:id', async (req, res) => {
     const id = req.params.id;
     try {
@@ -73,16 +84,6 @@ router.get('/:id', async (req, res) => {
 });
 
 
-router.get("/logout", (req, res) => {
-    req.logOut(function(err) {
-        if(err)
-        {
-            return next(err);
-        }
-        res.render("index", { message: "You have logged out successfully" });
-    });
-   
-}); 
 
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {

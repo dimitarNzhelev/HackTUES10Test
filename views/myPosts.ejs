@@ -47,7 +47,7 @@ function deletePost(id) {
       })
       .then(response => {
         if (response.ok) {
-          window.location.href = '/dashboard';
+          window.location.href = '/dashboard/myposts';
         } else {
           console.error('Failed to delete post');
         }

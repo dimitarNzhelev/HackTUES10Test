@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { toggleLike, getLikeStatus, getTotalLikes } = require('../controllers/dashboardController');
+const { toggleLike, getLikeStatus, getTotalLikes } = require('../controllers/postController');
 const { checkNotAuthenticated } = require('../middleware/authentication');
 
 router.use(checkNotAuthenticated);

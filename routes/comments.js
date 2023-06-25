@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { deleteCommentById, updateCommentById, createComment } = require('../controllers/dashboardController');
+const { deleteCommentById, updateCommentById, createComment } = require('../controllers/commentController');
 const { checkNotAuthenticated } = require('../middleware/authentication');
 
 router.use(checkNotAuthenticated);

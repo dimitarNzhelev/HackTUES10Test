@@ -1,18 +1,36 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const { getMyPosts, deletePostById } = require('../controllers/dashboardController');
+const { getMyPosts, deletePostById } = require('../controllers/postController');
+const {generateFileName} = require("../controllers/S3Service");
 const { checkNotAuthenticated } = require('../middleware/authentication');
 const storage = multer.memoryStorage()
 const upload = multer({storage: storage})
+const sharp = require('sharp');
+
+const {pool} = require('../config/dbConf');
+const {S3Client, DeleteObjectCommand, PutObjectCommand} = require('@aws-sdk/client-s3');
 
 
+
+const bucketName = process.env.BUCKET_NAME
+const bucketRegion = process.env.BUCKET_REGION
+const accessKey = process.env.ACCESS_KEY
+const secretAccessKey = process.env.SECRET_ACCESS_KEY
+
+const s3 = new S3Client({
+    credentials: {
+        accessKeyId: accessKey,
+        secretAccessKey: secretAccessKey
+    },
+    region: bucketRegion
+});
 router.use(checkNotAuthenticated);
 
 router.get('/', async (req, res) => {
     try {
-        res.render("myPosts", {posts: await getMyPosts(req)});
-    } catch (err) {
+        res.render("myPosts", {posts: await getMyPosts(req.user.id)});
+    } catch (err) { 
         console.log(err);
         res.status(500).send('Server error');
     }
@@ -37,10 +55,10 @@ router.get('/:id/update', async (req, res) => {
     res.render('updatePost', {post: post.rows[0]});
 });
 
-
 router.post('/:id/update', upload.single('photo'), async (req, res) => {
   const id = req.params.id;
   const { caption, description } = req.body;
+  console.log(caption, description);
 
   try {
     if(req.file){
@@ -62,7 +80,10 @@ router.post('/:id/update', upload.single('photo'), async (req, res) => {
     const fileBuffer = await sharp(req.file.buffer)
       .resize({ width: 300, height: 300, fit: "contain" })
       .toBuffer();
-    const newImageKey = generateFileName();
+    const newImageKey = await generateFileName();
+    console.log(typeof bucketName, bucketName);
+    console.log(typeof newImageKey, newImageKey);
+
     const uploadParams = {
       Bucket: bucketName,
       Key: newImageKey,

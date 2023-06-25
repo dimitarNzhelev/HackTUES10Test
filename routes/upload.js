@@ -1,6 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-const { uploadPost } = require('../controllers/dashboardController');
+const { uploadPost } = require('../controllers/postController');
 const { checkNotAuthenticated } = require('../middleware/authentication');
 
 const storage = multer.memoryStorage()
