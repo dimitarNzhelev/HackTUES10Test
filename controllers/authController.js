@@ -23,7 +23,7 @@ function validateUser(req, res, token){
                 return;
             }
             req.flash('success_msg', "Successfully verified. Please log in.");
-            res.redirect("/users/login");
+            res.redirect("/auth/login");
         }
     );
 }
@@ -44,7 +44,7 @@ async function insertUserAndSendEmail (req, res, name, email, password)  {
                 from: process.env.EMAIL,
                 to: email,
                 subject: 'Verify Email',
-                text: `Please click on the following link, or paste this into your browser to complete the process: \n\n http://${req.headers.host}/users/verify-email?token=${emailToken}\n\n`
+                text: `Please click on the following link, or paste this into your browser to complete the process: \n\n http://${req.headers.host}/auth/verify-email?token=${emailToken}\n\n`
             };
 
             transporter.sendMail(mailOptions, (err, response) => {
@@ -52,7 +52,7 @@ async function insertUserAndSendEmail (req, res, name, email, password)  {
                     console.log(err);
                 } else {
                     req.flash('success_msg', "Please check your email to verify your account.");
-                    res.redirect("/users/login");
+                    res.redirect("/auth/login");
                 }
             });
         }
