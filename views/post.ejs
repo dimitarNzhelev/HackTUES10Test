@@ -112,6 +112,9 @@
 
         function addComment(postId, userId, username) {
             const newCommentInput = document.createElement('input');
+            console.log("post id", postId);
+            console.log("user id", userId);
+            console.log("username", username);
             newCommentInput.type = 'text';
             newCommentInput.id = 'new_comment_input';
             newCommentInput.placeholder = 'Write your comment here';
