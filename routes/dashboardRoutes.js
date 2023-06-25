@@ -4,7 +4,7 @@ const sharp = require('sharp');
 const { PutObjectCommand, GetObjectCommand, S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { pool } = require('../config/dbConf');
-const { deletePostById, getMyPosts, uploadPost, getPostById, generateFileName, toggleLike, getLikeStatus, getUserById, getCommnetsByPost, deleteCommentById, updateCommentById, createComment} = require('../controllers/dashboardController');
+const { deletePostById, getMyPosts, uploadPost, getPostById, generateFileName, toggleLike, getLikeStatus, getUserById, getCommnetsByPost, deleteCommentById, updateCommentById, createComment, getTotalLikes} = require('../controllers/dashboardController');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -150,7 +150,7 @@ router.post('/myposts/:id/like', async (req, res) => {
   }
 });
 
-router.get('/myposts/:id/likeStatus', async (req, res) => {
+router.get('/posts/:id/likeStatus', async (req, res) => {
   const postId = parseInt(req.params.id);
   const userId = req.user.id;
   try {
@@ -230,6 +230,18 @@ router.post('/posts/:id/comments', express.json(), async (req, res) => {
   } catch (error) {
     console.error('Error creating comment:', error);
     res.status(500).json({ message: 'Error creating comment.' });
+  }
+});
+
+
+router.get('/posts/:id/totalLikes', async (req, res) => {
+  const postId = parseInt(req.params.id);
+  try {
+    const totalLikes = await getTotalLikes(postId);
+    res.status(200).json({ totalLikes });
+  } catch (error) {
+    console.error('Error getting total likes:', error);
+    res.status(500).json({ message: 'Error getting total likes.' });
   }
 });
 

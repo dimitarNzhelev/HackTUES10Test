@@ -61,52 +61,6 @@ function updatePost(id) {
       window.location.href = `/dashboard/myposts/${id}/update`;
     }
 
-function likePost(id, isLiked) {
-  const likeButton = document.getElementById(`like-button-${id}`);
-  const likeIcon = likeButton.querySelector('i');
-
-  if (isLiked) {
-    likeButton.classList.remove('liked');
-    likeIcon.classList.remove('fas', 'fa-heart');
-    likeIcon.classList.add('far', 'fa-heart');
-  } else {
-    likeButton.classList.add('liked');
-    likeIcon.classList.remove('far', 'fa-heart');
-    likeIcon.classList.add('fas', 'fa-heart');
-  }
-
-  fetch(`/dashboard/myposts/${id}/like`, {
-    method: 'POST'
-  })
-    .then(response => {
-      if (response.ok) {
-      } else {
-        console.error('Failed to like post');
-      }
-    })
-    .catch(error => {
-      console.error('Failed to like post:', error);
-    });
-}
-
-async function isLiked(id) {
-  try {
-    const response = await fetch(`/dashboard/myposts/${id}/likeStatus`, {
-      method: 'GET'
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      const likeStatus = data.likeStatus;
-      likePost(id, likeStatus);
-    } else {
-      throw new Error('Failed to fetch like status');
-    }
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
   </script>
 </head>
 <body>
@@ -119,9 +73,6 @@ async function isLiked(id) {
         <div class="post-buttons">
           <button onclick="deletePost('<%= post.id %>')">Delete</button>
           <button onclick="updatePost('<%= post.id %>')">Update</button>
-          <button id="like-button-<%= post.id %>" class="like-button" onclick="isLiked('<%= post.id %>')">
-            <i class="fas fa-heart<%= post.liked ? ' liked' : '' %>"></i>
-          </button>
         </div>
       </div>
     <% }) %>

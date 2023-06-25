@@ -3,6 +3,7 @@
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <% if(typeof post != "undefined" && typeof user != "undefined") { %>
     <title><%= post.caption%></title>
@@ -41,6 +42,7 @@
         .comment-button:hover {
             background-color: #0056b3;
         }
+
     </style>
 
     <script>
@@ -149,15 +151,120 @@
                 }
             });
         }   
+    
+        async function likePost(id) {
+            const heartIcon = document.getElementById(`heart-icon`);
+
+            fetch(`/dashboard/myposts/${id}/like`, {
+                method: 'POST'
+            })
+            .then(async response => {
+                if (response.ok) {
+                    const totalLikes = document.getElementById(`total-likes`);
+
+                    const newLikes = await getTotalLikes(id);
+                    console.log("TOTAL LIKES: ", newLikes);
+                    totalLikes.textContent = `Total likes: ${newLikes}`;
+
+                    const likeStatus = await isLiked(id);
+                    console.log("LIKE STATUS: ", likeStatus)
+
+                    const heartIcon = document.getElementById(`heart-icon`);
+                    if(likeStatus){
+                        heartIcon.classList.remove('far', 'fa-heart');
+                        heartIcon.classList.add('fas', 'fa-heart');
+                        console.log("add fill");
+                    }else{
+                        console.log("remove fill");
+                        heartIcon.classList.remove('fas', 'fa-heart');
+                        heartIcon.classList.add('far', 'fa-heart');
+                    }
+                } else {
+                    console.error('Failed to like post');
+                }
+            })
+            .catch(error => {
+                console.error('Failed to like post:', error);
+            });
+        }
+
+
+        async function isLiked(id) {
+            try {
+                const response = await fetch(`/dashboard/posts/${id}/likeStatus`, {
+                method: 'GET'
+                });
+
+                if (response.ok) {
+                const data = await response.json();
+                const likeStatus = data.likeStatus;
+                console.log(likeStatus);
+               return likeStatus;
+                } else {
+                throw new Error('Failed to fetch like status');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+            }
+
+        async function getTotalLikes(id){
+            try {
+                const response = await fetch(`/dashboard/posts/${id}/totalLikes`, {
+                method: 'GET'
+                });
+
+                if (response.ok) {
+                const data = await response.json();
+                const totalLikes = data.totalLikes;
+                console.log(totalLikes);
+               return totalLikes;
+                } else {
+                throw new Error('Failed to fetch total likes');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+            }
+     
     </script>
 </head>
 <body>
+
     <% if(typeof post != "undefined" && typeof user != "undefined") { %>
     <div class="content">
         <h1><%= post.caption%></h1>
         <p><%= post.description%></p>
-        <p>Total likes: <%= post.totallikes %></p>
+        <% console.log(post.totallikes) %>
+        <p id="total-likes">Total likes: <%= post.totallikes %></p>
         <p id="totalcomments">Total comments: <%= post.totalcomments %></p>
+        <button id="like-button" class="like-button" onclick="likePost('<%= post.id %>')">
+            <i id="heart-icon" class="far fa-heart"></i>
+        </button>
+
+        <script>
+            const heartIcon = document.getElementById(`heart-icon`);
+            
+            async function checkLikeStatus() {
+                const likeStatus = await isLiked('<%= post.id %>');
+                console.log("LIKE STATUS: ", likeStatus)
+        
+                if(likeStatus){
+                    heartIcon.classList.remove('far', 'fa-heart');
+                    heartIcon.classList.add('fas', 'fa-heart');
+                    console.log("add fill");
+                }else{
+                    console.log("remove fill");
+                    heartIcon.classList.remove('fas', 'fa-heart');
+                    heartIcon.classList.add('far', 'fa-heart');
+                }
+            }
+        
+            checkLikeStatus();
+        </script>
+        
+    
+          
         <p>Posted by: <%= user.name %></p>
         <img class="post-image" src="<%= post.imageUrl %>" />
         <a href="dashboard/posts">Back to dashboard</a>

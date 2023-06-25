@@ -230,6 +230,15 @@ async function createComment(postId, userId, commentText) {
     }
 }
 
+async function getTotalLikes(postId){
+    const result = await pool.query(
+        `SELECT totallikes FROM posts WHERE id = $1`,
+        [postId]
+    );
+
+    return result.rows[0].totallikes;
+}
+
 
 
 module.exports = 
@@ -246,5 +255,6 @@ module.exports =
     deleteCommentById,
     getUserById,
     updateCommentById,
-    createComment
+    createComment,
+    getTotalLikes
 };
