@@ -203,7 +203,6 @@ function addComment(postId, userId, username) {
     newCommentInput.id = 'new_comment_input';
     newCommentInput.placeholder = 'Write your comment here';
 
-    // Append the new comment input to the "content" div
     const contentDiv = document.querySelector('.content');
     contentDiv.appendChild(newCommentInput);
 
@@ -327,6 +326,10 @@ function addComment(postId, userId, username) {
             }
             }
 
+        function share(id){
+            window.location.href = `/dashboard/myposts/${id}/share`;
+        }
+
     </script>
 </head>
 <body>
@@ -363,6 +366,7 @@ function addComment(postId, userId, username) {
         <p>Posted by: <%= user.name %></p>
         <a href="/dashboard/posts">Back to dashboard</a>
         <button class="comment-button" onclick="addComment('<%= post.id %>', '<%= guest.id %>', '<%= guest.name %>')">Add comment</button>
+        <button class="comment-button" onclick="share('<% post.imageUrl %>')">Share</button>
     </div>
     <img class="post-image" src="<%= post.imageUrl %>"/>
     </div>
