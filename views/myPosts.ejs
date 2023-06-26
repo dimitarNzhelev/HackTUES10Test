@@ -112,6 +112,9 @@
           <div class="post-buttons">
             <button onclick="updatePost('<%= post.id %>')">Update</button>
             <button onclick="deletePost('<%= post.id %>')">Delete</button>
+            <% if(post.visibility == 'unlisted'){ %>
+              <button onclick="share( '<%= post.id %>')">Share</button>
+           <% } %>
           </div>
         </div>
       <% }) %>

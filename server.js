@@ -35,10 +35,11 @@ app.use(flash());
 
 var corsOptions = {
     origin: 'https://hacktues10-imgur-fjt5c.ondigitalocean.app/',
-    optionsSuccessStatus: 200 
+    optionsSuccessStatus: 200,
+    methods: "GET, PUT, POST, DELETE",
   }
   
-  app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
 
 app.get('/', (req, res) =>{
@@ -55,6 +56,6 @@ app.use('/dashboard/posts', postsRouter);
 app.use('/dashboard/posts/:id/comments', commentsRouter);
 
 app.listen(8080, () => {
-  console.log('Server started on port 3000');
+  console.log('Server started on port 8080');
 });
 

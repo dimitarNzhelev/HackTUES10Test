@@ -62,8 +62,12 @@ router.get('/:id/share', async (req, res) => {
       res.status(404).send('Post not found');
       return;
     }
-    res.send((await (S3Service.addImageUrls(post.rows)))[0].imageUrl);
-});
+    if(post.visibility === 'unlisted'){
+      res.send((await (S3Service.addImageUrls(post.rows)))[0].imageUrl);
+    }else {
+      res.status(403).send('Post is not unlisted');
+    }
+  });
 
 router.post('/:id/update', upload.single('photo'), async (req, res) => {
   const id = req.params.id;
