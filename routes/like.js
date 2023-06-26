@@ -35,7 +35,6 @@ router.get('/:id/total', async (req, res) => {
     const postId = parseInt(req.params.id);
     try {
       const totalLikes = await getTotalLikes(postId);
-      console.log(totalLikes)
       res.status(200).json({ totalLikes });
     } catch (error) {
       console.error('Error getting total likes:', error);

@@ -326,8 +326,21 @@ function addComment(postId, userId, username) {
             }
             }
 
-        function share(id){
-            window.location.href = `/dashboard/myposts/${id}/share`;
+            async function share(id) {
+            fetch(`/dashboard/myposts/${id}/share`)
+                .then(response => {
+                if(response.ok){
+                    return response.text();
+                } else {
+                    throw new Error('Failed to share post');
+                }
+                })
+                .then(url => {
+                window.location.href = url;
+                })
+                .catch(error => {
+                console.error(error);
+            });
         }
 
     </script>

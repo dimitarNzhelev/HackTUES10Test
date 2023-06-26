@@ -68,17 +68,21 @@ router.get('/:id/share', async (req, res) => {
 router.post('/:id/update', upload.single('photo'), async (req, res) => {
   const id = req.params.id;
   const { caption, description, visibility } = req.body;
-  console.log(caption, description, visibility);
 
   try {
+      const post = await pool.query(`SELECT * FROM posts WHERE id = $1`, [id]);
+  
+      if (!post) {
+        res.status(404).send('Post not found');
+        return;
+      }
+  
+      await pool.query('UPDATE posts SET visibility = $1 WHERE id = $2', [
+        visibility,
+        id
+      ]);
+
     if(req.file){
-    const post = await pool.query(`SELECT * FROM posts WHERE id = $1`, [id]);
-
-    if (!post) {
-      res.status(404).send('Post not found');
-      return;
-    }
-
     const prevImageKey = post.rows[0].imagename;
     const deleteParams = {
       Bucket: bucketName,
@@ -91,8 +95,7 @@ router.post('/:id/update', upload.single('photo'), async (req, res) => {
       .resize({ width: 300, height: 300, fit: "contain" })
       .toBuffer();
     const newImageKey = await generateFileName();
-    console.log(typeof bucketName, bucketName);
-    console.log(typeof newImageKey, newImageKey);
+
 
     const uploadParams = {
       Bucket: bucketName,
@@ -103,18 +106,22 @@ router.post('/:id/update', upload.single('photo'), async (req, res) => {
     const uploadCommand = new PutObjectCommand(uploadParams);
     await s3.send(uploadCommand);
 
-    await pool.query('UPDATE posts SET caption = $1, description = $2, imagename = $3, visibility = $4 WHERE id = $5', [
-      caption,
-      description,
+    await pool.query('UPDATE posts SET imagename = $1 WHERE id = $2', [
       newImageKey,
-      visibility,
       id
     ]);
-  }else{
-    await pool.query('UPDATE posts SET caption = $1, description = $2, visibility = $3 WHERE id = $4', [
+  }
+  
+  if(caption){
+    await pool.query('UPDATE posts SET caption = $1 WHERE id = $2', [
       caption,
+      id
+    ]);
+  }
+
+  if(description){
+    await pool.query('UPDATE posts SET description = $1 WHERE id = $2', [
       description,
-      visibility,
       id
     ]);
   }

@@ -31,12 +31,11 @@
     }
 
     input[type="text"],
-    input[type="file"],
-    select {
+    input[type="file"] {
       margin-bottom: 1rem;
-      padding: 80px;
       font-size: 150px;
       border-radius: 20px;
+      height: 200px;
     }
 
     input[type="submit"] {
@@ -60,6 +59,8 @@
       color: #3498db;
     }
     select {
+      font-size: 150px;
+      border-radius: 20px;
       padding: 0;
       height: 200px;
     }
@@ -73,17 +74,17 @@
   <h2>Upload Image</h2>
   <form action="/dashboard/upload" method="post" enctype="multipart/form-data">
     <label for="caption">Caption:</label><br>
-    <input type="text" id="caption" name="caption"><br><br>
+    <input type="text" id="caption" name="caption" required><br><br>
     <label for="description">Description:</label><br>
-    <input type="text" id="description" name="description"><br><br>
+    <input type="text" id="description" name="description" required><br><br>
     <label for="visibility">Visibility:</label><br>
-    <select id="visibility" name="visibility">
+    <select id="visibility" name="visibility" required>
       <option value="listed" selected>Listed</option>
       <option value="unlisted">Unlisted</option>
       <option value="private">Private</option>
     </select>
     <label for="imageUpload">Upload an Image:</label><br>
-    <input type="file" name="photo" id="imageUpload"><br><br>
+    <input type="file" name="photo" id="imageUpload" required><br><br>
     <input type="submit" value="Upload">
   </form>
   <a href="/dashboard/">Back</a>

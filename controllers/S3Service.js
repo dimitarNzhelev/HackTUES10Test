@@ -43,7 +43,6 @@ async function addImageUrls(posts) {
             privateKey: process.env.CDN_PRIVATE_KEY,
             keyPairId: process.env.CDN_KEY_PAIR_ID
         });
-        console.log(post.imageUrl)
     }
 
     return posts;

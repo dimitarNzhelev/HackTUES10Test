@@ -29,7 +29,6 @@ async function uploadPost(req) {
     if(req.file){
         const fileBuffer = await sharp(req.file.buffer).resize({width: 400, height: 400, fit: "contain"}).toBuffer();
         const fileName = await generateFileName();
-        console.log(fileName);
         const command = new PutObjectCommand({
             Bucket: bucketName,
             Key: fileName,

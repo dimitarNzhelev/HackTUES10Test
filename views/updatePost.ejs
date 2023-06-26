@@ -76,13 +76,13 @@
   <h2>Update Post</h2>
   <form action="/dashboard/myposts/<%= post.id %>/update" method="post" enctype="multipart/form-data">
     <label for="caption">Caption:</label><br>
-    <input type="text" id="caption" name="caption" required><br><br>
+    <input type="text" id="caption" name="caption" ><br><br>
 
     <label for="description">Description:</label><br>
-    <textarea id="description" name="description" required></textarea><br><br>
+    <textarea id="description" name="description" ></textarea><br><br>
 
     <label for="photo">Choose Image:</label><br>
-    <input type="file" id="photo" name="photo" accept="image/*" required><br><br>
+    <input type="file" id="photo" name="photo" accept="image/*" ><br><br>
     <label for="visibility">Visibility:</label><br>
     <select id="visibility" name="visibility" required>
       <option value="listed">Listed</option>

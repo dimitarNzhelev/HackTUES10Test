@@ -22,7 +22,6 @@ router.post('/', express.json(), async (req, res) => {
     const commentText = req.body.commentText;
     try {
       const comment = await createComment(postId, userId, commentText);
-      console.log(comment.id)
       res.status(200).json({ commentId: comment.id, success: true });
     } catch (error) {
       console.error('Error creating comment:', error);

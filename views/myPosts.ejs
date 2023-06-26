@@ -80,7 +80,6 @@
   <title>My Posts</title>
   <script>
     function deletePost(id) {
-      console.log(id);
       fetch(`/dashboard/myposts/${id}`, {
         method: 'DELETE'
       })
@@ -99,10 +98,23 @@
     function updatePost(id) {
       window.location.href = `/dashboard/myposts/${id}/update`;
     }
+    async function share(id) {
+      fetch(`/dashboard/myposts/${id}/share`)
+        .then(response => {
+          if(response.ok){
+            return response.text();
+          } else {
+            throw new Error('Failed to share post');
+          }
+        })
+        .then(url => {
+          window.location.href = url;
+        })
+        .catch(error => {
+          console.error(error);
+      });
+}
 
-    function share(id) {
-      window.location.href = `/dashboard/myposts/${id}/share`;
-    }
   </script>
 </head>
 <body>
