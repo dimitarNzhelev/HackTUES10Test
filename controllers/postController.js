@@ -42,6 +42,7 @@ async function getMyPosts(userId){
 }
 
 async function uploadPost(req) {
+    try{
     if(req.file){
         const fileBuffer = await sharp(req.file.buffer).resize({width: 400, height: 400, fit: "contain"}).toBuffer();
         const fileName = await generateFileName();
@@ -56,6 +57,9 @@ async function uploadPost(req) {
         await pool.query('INSERT INTO posts(caption, description, imagename, user_id, visibility) VALUES($1, $2, $3, $4, $5) RETURNING *', [req.body.caption, req.body.description, fileName, req.user.id, req.body.visibility]);
     
         }
+    }catch(err){
+        alert(err);
+    }
 }
 
 async function deletePostById(id) {
