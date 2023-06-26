@@ -366,7 +366,7 @@ function addComment(postId, userId, username) {
         <p>Posted by: <%= user.name %></p>
         <a href="/dashboard/posts">Back to dashboard</a>
         <button class="comment-button" onclick="addComment('<%= post.id %>', '<%= guest.id %>', '<%= guest.name %>')">Add comment</button>
-        <button class="comment-button" onclick="share('<% post.imageUrl %>')">Share</button>
+        <button class="comment-button" onclick="share('<%= post.id %>')">Share</button>
     </div>
     <img class="post-image" src="<%= post.imageUrl %>"/>
     </div>
