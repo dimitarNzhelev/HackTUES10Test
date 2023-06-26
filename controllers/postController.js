@@ -58,7 +58,7 @@ async function uploadPost(req) {
     
         }
     }catch(err){
-        alert(err);
+        console.error(err);
     }
 }
 
