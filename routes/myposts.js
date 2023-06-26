@@ -72,8 +72,8 @@ router.get('/:id/share', async (req, res) => {
 
 router.post('/:id/update', upload.single('photo'), async (req, res) => {
   const id = req.params.id;
-  const { caption, description } = req.body;
-  console.log(caption, description);
+  const { caption, description, visibility } = req.body;
+  console.log(caption, description, visibility);
 
   try {
     if(req.file){
@@ -108,16 +108,18 @@ router.post('/:id/update', upload.single('photo'), async (req, res) => {
     const uploadCommand = new PutObjectCommand(uploadParams);
     await s3.send(uploadCommand);
 
-    await pool.query('UPDATE posts SET caption = $1, description = $2, imagename = $3 WHERE id = $4', [
+    await pool.query('UPDATE posts SET caption = $1, description = $2, imagename = $3, visibility = $4 WHERE id = $5', [
       caption,
       description,
       newImageKey,
+      visibility,
       id
     ]);
   }else{
-    await pool.query('UPDATE posts SET caption = $1, description = $2 WHERE id = $3', [
+    await pool.query('UPDATE posts SET caption = $1, description = $2, visibility = $3 WHERE id = $4', [
       caption,
       description,
+      visibility,
       id
     ]);
   }
