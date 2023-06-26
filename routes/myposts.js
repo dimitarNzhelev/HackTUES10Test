@@ -62,7 +62,8 @@ router.get('/:id/share', async (req, res) => {
       res.status(404).send('Post not found');
       return;
     }
-    if(post.visibility === 'unlisted'){
+
+    if(post.rows[0].visibility == 'unlisted'){
       res.send((await (S3Service.addImageUrls(post.rows)))[0].imageUrl);
     }else {
       res.status(403).send('Post is not unlisted');
