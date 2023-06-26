@@ -1,74 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css"
-  />
-  <style>
-    body {
-      background-color: #f0f0f0;
-    }
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" />
+    <style>
+      body {
+        background-color: #f0f0f0;
+      }
 
-    h1 {
-      text-align: center;
-      padding-top: 2rem;
-      color: #2c3e50;
-      font-size: 100px;
-    }
+      h1 {
+        text-align: center;
+        padding-top: 2rem;
+        color: #2c3e50;
+        font-size: 100px;
+      }
 
-    a {
-      color: #2980b9;
-      text-decoration: none;
-      font-size: 80px;
-    }
+      a {
+        color: #2980b9;
+        text-decoration: none;
+        font-size: 80px;
+      }
 
-    a:hover {
-      color: #3498db;
-    }
+      a:hover {
+        color: #3498db;
+      }
 
-    .go-back-link {
-      display: block;
-      text-align: center;
-      margin-bottom: 1rem;
-    }
+      .go-back-link {
+        display: block;
+        text-align: center;
+        margin-bottom: 1rem;
+      }
 
-    .post-container {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-    }
+      .post-container {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+      }
 
-    .post-container a {
-      flex: 1 0 20%;
-      margin: 1rem;
-    }
+      .post-container a {
+        flex: 1 0 20%;
+        margin: 1rem;
+      }
 
-    img {
-      width: 100%;
-      height: auto;
-      border-radius: 15px;
-      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-  </style>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>All Posts</title>
-</head>
-<body>
+      img {
+        width: 100%;
+        height: auto;
+        border-radius: 15px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>All Posts</title>
+  </head>
+  <body>
     <h1>All posts</h1>
     <a class="go-back-link" href="/dashboard">Go back</a>
 
     <% if(typeof posts != "undefined") { %>
     <div class="post-container">
       <% posts.forEach(post => { %>
-        <a href="/dashboard/posts/<%= post.id %>">
-          <img src="<%= post.imageUrl %>" />
-        </a>
+      <a href="/dashboard/posts/<%= post.id %>">
+        <img src="<%= post.imageUrl %>" />
+      </a>
       <% }) %>
     </div>
-   <% } %>
-
-</body>
+    <% } %>
+  </body>
 </html>

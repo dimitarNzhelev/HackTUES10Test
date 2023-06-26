@@ -1,97 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css">
-  <title>Update Post</title>
-  <style>
-    body {
-      background-color: #f0f0f0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" />
+    <title>Update Post</title>
+    <style>
+      body {
+        background-color: #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
 
-    h2 {
-      color: #2c3e50;
-      font-size: 200px;
-    }
+      h2 {
+        color: #2c3e50;
+        font-size: 200px;
+      }
 
-    form {
-      display: flex;
-      flex-direction: column;
-    }
+      form {
+        display: flex;
+        flex-direction: column;
+      }
 
-    label {
-      color: #2c3e50;
-      font-size: 100px;
-    }
+      label {
+        color: #2c3e50;
+        font-size: 100px;
+      }
 
-    input[type="text"],
-    textarea,
-    input[type="file"] {
-      margin-bottom: 1rem;
-      padding: 80px;
-      font-size: 150px;
-      border-radius: 20px;
-    }
+      input[type="text"],
+      textarea,
+      input[type="file"] {
+        margin-bottom: 1rem;
+        padding: 80px;
+        font-size: 150px;
+        border-radius: 20px;
+      }
 
-    input[type="submit"] {
-      cursor: pointer;
-      font-size: 100px;
-      height: 100px;
-      text-align: center;
-      align-self: center;
-      border-radius: 20px;
-    }
+      input[type="submit"] {
+        cursor: pointer;
+        font-size: 100px;
+        height: 100px;
+        text-align: center;
+        align-self: center;
+        border-radius: 20px;
+      }
 
-    a {
-      color: #2980b9;
-      margin-top: 1rem;
-      text-decoration: none;
-      transition: color 0.2s ease-in-out;
-      font-size: 100px;
-    }
+      a {
+        color: #2980b9;
+        margin-top: 1rem;
+        text-decoration: none;
+        transition: color 0.2s ease-in-out;
+        font-size: 100px;
+      }
 
-    a:hover {
-      color: #3498db;
-    }
+      a:hover {
+        color: #3498db;
+      }
 
-    select {
-      padding: 0;
-      height: 200px;
-      margin-bottom: 1rem;
-      font-size: 150px;
-      border-radius: 20px;
-    }
-  </style>
-</head>
-<body>
-  <h2>Update Post</h2>
-  <form action="/dashboard/myposts/<%= post.id %>/update" method="post" enctype="multipart/form-data">
-    <label for="caption">Caption:</label><br>
-    <input type="text" id="caption" name="caption" ><br><br>
+      select {
+        padding: 0;
+        height: 200px;
+        margin-bottom: 1rem;
+        font-size: 150px;
+        border-radius: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Update Post</h2>
+    <form
+      action="/dashboard/myposts/<%= post.id %>/update"
+      method="post"
+      enctype="multipart/form-data">
+      <label for="caption">Caption:</label><br />
+      <input type="text" id="caption" name="caption" /><br /><br />
 
-    <label for="description">Description:</label><br>
-    <textarea id="description" name="description" ></textarea><br><br>
+      <label for="description">Description:</label><br />
+      <textarea id="description" name="description"></textarea><br /><br />
 
-    <label for="photo">Choose Image:</label><br>
-    <input type="file" id="photo" name="photo" accept="image/*" ><br><br>
-    <label for="visibility">Visibility:</label><br>
-    <select id="visibility" name="visibility" required>
-      <option value="listed">Listed</option>
-      <option value="unlisted">Unlisted</option>
-      <option value="private">Private</option>
-    </select><br><br>
+      <label for="photo">Choose Image:</label><br />
+      <input type="file" id="photo" name="photo" accept="image/*" /><br /><br />
+      <label for="visibility">Visibility:</label><br />
+      <select id="visibility" name="visibility" required>
+        <option value="listed">Listed</option>
+        <option value="unlisted">Unlisted</option>
+        <option value="private">Private</option></select
+      ><br /><br />
 
-    <input type="submit" value="Update Post"><br><br>
-  </form>
-  <a href="/dashboard/myposts/">Back</a>
-</body>
+      <input type="submit" value="Update Post" /><br /><br />
+    </form>
+    <a href="/dashboard/myposts/">Back</a>
+  </body>
 </html>

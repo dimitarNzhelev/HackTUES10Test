@@ -1,104 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" />
-  <style>
-    body {
-      background-color: #f0f0f0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" />
+    <style>
+      body {
+        background-color: #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
 
-    h1 {
-      color: #2c3e50;
-      font-size: 200px;
-    }
+      h1 {
+        color: #2c3e50;
+        font-size: 200px;
+      }
 
-    ul {
-      list-style-type: none;
-      padding: 0;
-    }
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
 
-    li {
-      color: red;
-      margin-bottom: 0.5rem;
-      font-size: 120px;
-    }
+      li {
+        color: red;
+        margin-bottom: 0.5rem;
+        font-size: 120px;
+      }
 
-    form {
-      display: flex;
-      flex-direction: column;
-    }
+      form {
+        display: flex;
+        flex-direction: column;
+      }
 
-    input[type="text"],
-    input[type="email"],
-    input[type="password"] {
-      margin-bottom: 1rem;
-      padding: 80px;
-      font-size: 150px;
-      border-radius: 20px;
-    }
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
+        margin-bottom: 1rem;
+        padding: 80px;
+        font-size: 150px;
+        border-radius: 20px;
+      }
 
-    input[type="submit"] {
-      cursor: pointer;
-      font-size: 100px;
-      height: 100px;
-      text-align: center;
-      align-self: center;
-      border-radius: 20px;
-    }
+      input[type="submit"] {
+        cursor: pointer;
+        font-size: 100px;
+        height: 100px;
+        text-align: center;
+        align-self: center;
+        border-radius: 20px;
+      }
 
-    a {
-      color: #2980b9;
-      margin-top: 1rem;
-      text-decoration: none;
-      transition: color 0.2s ease-in-out;
-      font-size: 100px;
-    }
+      a {
+        color: #2980b9;
+        margin-top: 1rem;
+        text-decoration: none;
+        transition: color 0.2s ease-in-out;
+        font-size: 100px;
+      }
 
-    a:hover {
-      color: #3498db;
-    }
-  </style>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Register</title>
-</head>
-<body>
-  <h1>Register</h1>
+      a:hover {
+        color: #3498db;
+      }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Register</title>
+  </head>
+  <body>
+    <h1>Register</h1>
 
-  <ul>
-    <% if (typeof(errors) != 'undefined') { %> 
-      <% errors.forEach(error => { %>
+    <ul>
+      <% if (typeof(errors) != 'undefined') { %> <% errors.forEach(error => { %>
       <li><%= error.msg %></li>
-      <% }) %> 
-    <% } %>
-  </ul>
-  
-  <form action="/auth/register" method="POST">
-    <div>
-      <input type="text" id="name" name="name" placeholder="Name" required />
-    </div>
-    <div>
-      <input type="email" id="email" name="email" placeholder="Email" required />
-    </div>
-    <div>
-      <input type="password" id="password" name="password" placeholder="Password" required />
-    </div>
-    <div>
-      <input type="password" id="password2" name="password2" placeholder="Confirm Password" required />
-    </div>
-    <div>
-      <input type="submit" value="Register" />
-    </div>
+      <% }) %> <% } %>
+    </ul>
 
-    <a href="/auth/login">Already registered? Login here</a>
-  </form>
-</body>
+    <form action="/auth/register" method="POST">
+      <div>
+        <input type="text" id="name" name="name" placeholder="Name" required />
+      </div>
+      <div>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Email"
+          required />
+      </div>
+      <div>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Password"
+          required />
+      </div>
+      <div>
+        <input
+          type="password"
+          id="password2"
+          name="password2"
+          placeholder="Confirm Password"
+          required />
+      </div>
+      <div>
+        <input type="submit" value="Register" />
+      </div>
+
+      <a href="/auth/login">Already registered? Login here</a>
+    </form>
+  </body>
 </html>
