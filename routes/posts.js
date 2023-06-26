@@ -10,7 +10,7 @@ const { pool } = require('../config/dbConf');
 router.use(checkNotAuthenticated);
 
 router.get('/', async (req, res) => {
-    const posts = (await pool.query("SELECT * FROM posts")).rows;
+    const posts = (await pool.query("SELECT * FROM posts WHERE visibility = 'listed';")).rows;
     for(const post of posts){
       post.imageUrl = getSignedUrl({
         url: "https://d2skheuztgfb2.cloudfront.net/" + post.imagename,
@@ -19,7 +19,6 @@ router.get('/', async (req, res) => {
         keyPairId: process.env.CDN_KEY_PAIR_ID
     })
     }
-    console.log("IVAA" , req.user);
     res.render("posts", {posts: posts});
 })
 

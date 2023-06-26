@@ -7,7 +7,7 @@ const { checkNotAuthenticated } = require('../middleware/authentication');
 const storage = multer.memoryStorage()
 const upload = multer({storage: storage})
 const sharp = require('sharp');
-
+const S3Service = require('../controllers/S3Service');
 const {pool} = require('../config/dbConf');
 const {S3Client, DeleteObjectCommand, PutObjectCommand} = require('@aws-sdk/client-s3');
 
@@ -53,6 +53,16 @@ router.get('/:id/update', async (req, res) => {
       return;
     }
     res.render('updatePost', {post: post.rows[0]});
+});
+
+router.get('/:id/share', async (req, res) => {
+    const id = req.params.id;
+    const post = await pool.query(`SELECT * FROM posts WHERE id = $1`, [id]);
+    if (!post) {
+      res.status(404).send('Post not found');
+      return;
+    }
+    res.send((await (S3Service.addImageUrls(post.rows)))[0].imageUrl);
 });
 
 router.post('/:id/update', upload.single('photo'), async (req, res) => {

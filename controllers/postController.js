@@ -38,7 +38,7 @@ async function uploadPost(req) {
         });
     
         await s3.send(command);
-        await pool.query('INSERT INTO posts(caption, description, imagename, user_id) VALUES($1, $2, $3, $4) RETURNING *', [req.body.caption, req.body.description, fileName, req.user.id]);
+        await pool.query('INSERT INTO posts(caption, description, imagename, user_id, visibility) VALUES($1, $2, $3, $4, $5) RETURNING *', [req.body.caption, req.body.description, fileName, req.user.id, req.body.visibility]);
     
         }
 }

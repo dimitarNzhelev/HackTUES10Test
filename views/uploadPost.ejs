@@ -31,7 +31,8 @@
     }
 
     input[type="text"],
-    input[type="file"] {
+    input[type="file"],
+    select {
       margin-bottom: 1rem;
       padding: 80px;
       font-size: 150px;
@@ -58,6 +59,11 @@
     a:hover {
       color: #3498db;
     }
+    select {
+      padding: 0;
+      height: 200px;
+    }
+
   </style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -70,6 +76,12 @@
     <input type="text" id="caption" name="caption"><br><br>
     <label for="description">Description:</label><br>
     <input type="text" id="description" name="description"><br><br>
+    <label for="visibility">Visibility:</label><br>
+    <select id="visibility" name="visibility">
+      <option value="listed" selected>Listed</option>
+      <option value="unlisted">Unlisted</option>
+      <option value="private">Private</option>
+    </select>
     <label for="imageUpload">Upload an Image:</label><br>
     <input type="file" name="photo" id="imageUpload"><br><br>
     <input type="submit" value="Upload">
