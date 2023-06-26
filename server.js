@@ -12,10 +12,11 @@ const likeRouter = require('./routes/like');
 const postsRouter = require('./routes/posts');
 const commentsRouter = require('./routes/comments');
 const authRoutes = require("./routes/auth");
+const saveRouter = require('./routes/save');
 
 initializePassport(passport);
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 8080;
 
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({extended: false}));
@@ -52,10 +53,12 @@ app.use('/dashboard', homeRouter);
 app.use('/dashboard/upload', uploadRouter);
 app.use('/dashboard/myposts', mypostsRouter);
 app.use('/dashboard/posts/like', likeRouter);
-app.use('/dashboard/posts', postsRouter);
 app.use('/dashboard/posts/:id/comments', commentsRouter);
+app.use('/dashboard/posts/save', saveRouter);
+app.use('/dashboard/posts', postsRouter);
 
-app.listen(8080, () => {
-  console.log('Server started on port 8080');
+
+app.listen(PORT, () => {
+  console.log('Server started on port', PORT);
 });
 

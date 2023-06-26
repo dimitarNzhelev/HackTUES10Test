@@ -343,6 +343,25 @@ function addComment(postId, userId, username) {
             });
         }
 
+        async function save(postid, userid){
+            const response = await fetch(`/dashboard/posts/save/${postid}`, { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userid: userid, postid: postid })
+            });
+
+            if(response.ok){
+                const jsonResponse = await response.json();
+                alert(jsonResponse.message);
+            } else {
+                console.error('Error:', response.status);
+                alert('Error saving post.');
+            }
+        }
+
+
     </script>
 </head>
 <body>
@@ -380,6 +399,8 @@ function addComment(postId, userId, username) {
         <a href="/dashboard/posts">Back to dashboard</a>
         <button class="comment-button" onclick="addComment('<%= post.id %>', '<%= guest.id %>', '<%= guest.name %>')">Add comment</button>
         <button class="comment-button" onclick="share('<%= post.id %>')">Share</button>
+        <button class="comment-button" onclick="save('<%= post.id %>', '<%= guest.id %>')">Save</button>
+
     </div>
     <img class="post-image" src="<%= post.imageUrl %>"/>
     </div>
