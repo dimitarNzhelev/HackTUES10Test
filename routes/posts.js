@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getPostById } = require('../controllers/postController');
+const { getPostById, shuffle } = require('../controllers/postController');
 const {getUserById } = require('../controllers/userController');
 const {getCommnetsByPost} = require('../controllers/commentController');
 const {getSignedUrl} = require('@aws-sdk/cloudfront-signer');
@@ -10,8 +10,12 @@ const { pool } = require('../config/dbConf');
 router.use(checkNotAuthenticated);
 
 router.get('/', async (req, res) => {
-    const posts = (await pool.query("SELECT * FROM posts WHERE visibility = 'listed';")).rows;
-    for(const post of posts){
+  let posts = (await pool.query("SELECT * FROM posts WHERE visibility = 'listed';")).rows;
+  posts = shuffle(posts);
+  
+  posts = posts.slice(0, 50);
+
+  for(const post of posts){
       post.imageUrl = getSignedUrl({
         url: "https://d2skheuztgfb2.cloudfront.net/" + post.imagename,
         dateLessThan: new Date(Date.now() + 60 * 60 * 1000 * 24),
@@ -19,7 +23,7 @@ router.get('/', async (req, res) => {
         keyPairId: process.env.CDN_KEY_PAIR_ID
     })
     }
-    res.render("posts", {posts: posts});
+  res.render("posts", {posts: posts});
 })
 
 router.get('/:id', async (req, res) => {

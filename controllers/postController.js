@@ -19,6 +19,22 @@ const s3 = new S3Client({
 });
 
 
+  // Fisher-Yates (Knuth) Shuffle algorithm
+  function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+  
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+  
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+  
+    return array;
+  }
+
 
 async function getMyPosts(userId){
     const result = await pool.query('SELECT * FROM posts WHERE user_id = $1', [userId]);
@@ -106,5 +122,6 @@ module.exports = {
     getPostById,
     toggleLike,
     getLikeStatus,
-    getTotalLikes
+    getTotalLikes,
+    shuffle
 };
