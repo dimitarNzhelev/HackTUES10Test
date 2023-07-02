@@ -2,6 +2,14 @@
 
 > "AZ SYM NAI INSANE LIGA EKKOTO NA SVETA."
 
+# V2 IS IN OTHER REPO!!!!
+
+<a href="https://github.com/dimitarNzhelev/HackTues10PrivateTest">repo</a><br>
+<a href="https://jellyfish-app-5kx28.ondigitalocean.app">check v2</a>
+
+
+## TVA E V1, DONT WATCH IT!!!!!
+
 Check out my [master piece](https://hacktues10-imgur-fjt5c.ondigitalocean.app/).
 ---
 
